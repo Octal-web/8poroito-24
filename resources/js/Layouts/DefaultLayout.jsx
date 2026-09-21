@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, Head } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
+import Lenis from '@studio-freight/lenis';
+import { SmoothScrollContext } from '../Contexts/SmoothScrollContext';
 
 import { GreenMarker } from '../Components/GreenMarker';
 import { ProposalModal } from '../Components/ProposalModal';
+import { CookieModal } from '../Components/CookieModal'; 
 
 const DefaultLayout = ({ children }) => {
-    const { controller, pagina } = usePage().props;
+    const { controller, pagina, notifyCookie } = usePage().props;
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
     const [isModalOpen, setModalOpen] = useState(false);
+    const [trackingEnabled, setTrackingEnabled] = useState(false);
+
+    const lenisRef = useRef(null);
+
+    useEffect(() => {
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+            smoothTouch: false,
+        });
+        lenisRef.current = lenis;
+        let animationFrame;
+
+        const raf = (time) => {
+            lenis.raf(time);
+            animationFrame = requestAnimationFrame(raf);
+        };
+        animationFrame = requestAnimationFrame(raf);
+
+        return () => {
+            cancelAnimationFrame(animationFrame);
+            lenis.destroy();
+            lenisRef.current = null;
+        };
+    }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -31,8 +61,33 @@ const DefaultLayout = ({ children }) => {
         setGradientPosition({ x, y });
     };
 
+    const acceptCookies = () => {
+        setTrackingEnabled(true);
+    };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (notifyCookie || trackingEnabled) {
+                const script = document.createElement('script');
+                script.innerHTML = `
+                    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                    f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5347TVB');
+                `;
+                document.head.appendChild(script);
+
+                const noscript = document.createElement('noscript');
+                noscript.innerHTML = `
+                    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5347TVB" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+                    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=114067279044838&ev=PageView&noscript=1" alt="" />
+                `;
+                document.body.appendChild(noscript);
+            }
+        }, 100);
+    }, [notifyCookie, trackingEnabled]);
+
     return (
-        <>
+        <SmoothScrollContext.Provider value={lenisRef}>
             <Head>
                 <title>{pagina.titulo}</title>
                 <meta name="description" content={pagina.descricao} />
@@ -49,8 +104,10 @@ const DefaultLayout = ({ children }) => {
                 <meta property="og:image:height" content={pagina.imagem.altura} />
 
                 <meta name="robots" content="index, follow"/>
+
+                <link rel="icon" href={`/favicon.ico`} type="image/x-icon" />
             </Head>
-            <header className={`header absolute top-0 left-0 right-0 z-[2] text-white ${['Cases', 'Politica', 'Contato'].includes(controller) && 'bg-black'}`}>
+            <header className={`header absolute top-0 left-0 right-0 z-[2] text-white ${['Cases', 'Politica', 'Contato', 'Politicas'].includes(controller) && 'bg-black'}`}>
                 <div className="container">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full my-8 xl:my-10 2xl:my-15">
@@ -140,7 +197,7 @@ const DefaultLayout = ({ children }) => {
                 </div>
             </header>
 
-            <main className={`overflow-hidden ${['Cases', 'Politica', 'Contato'].includes(controller) && 'pt-[119px] xl:pt-[135px] 2xl:pt-[175px]'}`}>
+            <main className={`overflow-hidden ${['Cases', 'Politica', 'Contato', 'Politicas'].includes(controller) && 'pt-[119px] xl:pt-[135px] 2xl:pt-[175px]'}`}>
                 {children}
             </main>
 
@@ -216,14 +273,14 @@ const DefaultLayout = ({ children }) => {
                                 <div className="text-sm mb-15 opacity-50 ml-20 md:ml-0">
                                     <ul>
                                         <li className="mb-2">
-                                            <a href="/" className="transition-all hover:opacity-80">Política de Privacidade</a>
+                                            <Link href={route('Politicas.privacidade')} className="transition-all hover:opacity-80">Política de Privacidade</Link>
                                         </li>
-                                        <li className="mb-2">
+                                        {/*<li className="mb-2">
                                             <a href="/" className="transition-all hover:opacity-80">Política de Cookies</a>
                                         </li>
                                         <li className="mb-2">
                                             <a href="/" className="transition-all hover:opacity-80">Termos e Condições</a>
-                                        </li>
+                                        </li>*/}
                                     </ul>
                                 </div>
 
@@ -256,7 +313,11 @@ const DefaultLayout = ({ children }) => {
                     </div>
                 </div>
             </footer>
-        </>
+
+            {!notifyCookie && (
+                <CookieModal acceptCookies={acceptCookies} visible={!notifyCookie} />
+            )}
+        </SmoothScrollContext.Provider>
     );
 };
 

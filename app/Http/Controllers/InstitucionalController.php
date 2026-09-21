@@ -55,7 +55,7 @@ class InstitucionalController extends Controller
                 ];
         });
 
-        return Inertia::render('Institucional/page', [
+        return Inertia::render('Institucional/index', [
             'clientes' => $clientes,
             'imagensGaleria' => $imagensGaleria
         ]);

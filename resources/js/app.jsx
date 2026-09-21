@@ -24,4 +24,6 @@ createInertiaApp({
     progress: {
         color: '#161616',
     },
+}).then(() => {
+    document.getElementById('app').removeAttribute('data-page');
 });

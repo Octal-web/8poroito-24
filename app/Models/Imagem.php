@@ -15,4 +15,9 @@ class Imagem extends Model
     protected $fillable = ['*'];
 
     protected $guarded = ['id'];
+
+    public function conteudo()
+    {
+        return $this->belongsTo(Conteudo::class);
+    }
 }

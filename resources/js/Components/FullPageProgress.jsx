@@ -11,7 +11,7 @@ export const FullPageProgress = () => {
             setLoading(true);
             setVisible(true);
 
-            if (event.detail.visit.method === 'post') {
+            if (event?.detail?.visit?.method === 'post' || event?.detail?.visit?.url?.pathname.startsWith('/manager')) {
                 setIsGet(false);
             } else {
                 setIsGet(true);
@@ -36,7 +36,7 @@ export const FullPageProgress = () => {
 
     return (
         <>
-            <div className={`fixed inset-0 bg-black z-50 flex items-center justify-center transition-all duration-500 animate-slide-in-bottom ${!loading && '-translate-y-full'}`}>
+            <div className={`fixed inset-0 bg-black z-[5000] flex items-center justify-center transition-all duration-500 animate-slide-in-bottom ${!loading && '-translate-y-full'}`}>
                 <img src={`/site/img/eight-effect.png`} className="w-9/12 max-w-80 mx-auto" />
             </div>
         </>

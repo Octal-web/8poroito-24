@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 class ContatoController extends Controller
 {
     public function index() {
-        return Inertia::render('Contato/page');
+        return Inertia::render('Contato/index');
     }
 
     /**

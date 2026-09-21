@@ -14,6 +14,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                admin: ['Inter', 'sans-serif'],
                 secondary: ['Bebas Neue', 'sans-serif'],
             },
             container: {
@@ -49,9 +50,19 @@ export default {
                     '0%': { transform: 'translateY(100%)' },
                     '100%': { transform: 'translateY(0)' },
                 },
+                'fade-in-down': {
+                    '0%': { opacity: '0', transform: 'translate3d(0,-100px,0)' },
+                    '100%': { opacity: '1', transform: 'none' },
+                },
+                'fade-out-down': {
+                    '0%': { opacity: '1', transform: 'none' },
+                    '100%': { opacity: '0', transform: 'translate3d(0, 100px,0)' },
+                }
             },
             animation: {
                 'slide-in-bottom': 'slide-in-bottom 300ms ease-out',
+                'fade-in-down': 'fade-in-down 200ms linear',
+                'fade-out-down': 'fade-out-down 200ms linear'
             },
         },
     },

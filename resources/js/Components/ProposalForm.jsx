@@ -28,7 +28,6 @@ export const ProposalForm = ({ gradientPosition, ...props }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log(data);
         post(route('Contato.enviar'), {
             preserveScroll: true,
         });

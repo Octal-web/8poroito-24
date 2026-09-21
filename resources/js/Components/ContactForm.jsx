@@ -5,7 +5,7 @@ import { InputMask } from '@react-input/mask';
 export const ContactForm = ({ gradientPosition, ...props }) => {
     const [aware, setAware] = useState(false);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, clearErrors } = useForm({
         nome: '',
         email: '',
         telefone: '',
@@ -26,8 +26,8 @@ export const ContactForm = ({ gradientPosition, ...props }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        clearErrors();
 
-        console.log(data);
         post(route('Contato.enviar'), {
             preserveScroll: true,
         });

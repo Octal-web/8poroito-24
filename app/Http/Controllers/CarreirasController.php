@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 class CarreirasController extends Controller
 {
     public function index() {
-        return Inertia::render('Carreiras/page');
+        return Inertia::render('Carreiras/index');
     }
 
     /**
@@ -71,16 +71,16 @@ class CarreirasController extends Controller
                 $data['apresentacao'] = $request->apresentacao;
                 $data['curriculo'] = $curriculo->arquivo ? $curriculo->arquivo : null;
 
-                // Mail::send('emails.curriculum', $data, function($message)use($data) {
-                //     $message->from('site@8poroito.com.br')
-                //             // ->to('trabalheconosco@8poroito.com.br')
-                //             ->to('rafael@8poroito.com.br')
-                //             ->subject('Um novo currículo foi enviado através da página de recrutamento!');
+                Mail::send('emails.curriculum', $data, function($message)use($data) {
+                    $message->from('site@8poroito.com.br')
+                            ->to('trabalheconosco@8poroito.com.br')
+                            ->to('rafael@8poroito.com.br')
+                            ->subject('Um novo currículo foi enviado através da página de recrutamento!');
 
-                //     if ($request->file('arq')) {
-                //         $message->attach(public_path('content/resumes/' . $data['curriculo']));
-                //     }
-                // });
+                    if ($request->file('arq')) {
+                        $message->attach(public_path('content/resumes/' . $data['curriculo']));
+                    }
+                });
 
                 return Inertia::location(route('Carreiras.concluido', [
                     'token' => $token

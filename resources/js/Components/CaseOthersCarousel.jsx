@@ -36,6 +36,13 @@ export const CaseOthersCarousel = ({ data }) => {
         speed: 500,
         responsive: [
             {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                }
+            },
+            {
                 breakpoint: 650,
                 settings: {
                     slidesToShow: 1,
@@ -48,7 +55,7 @@ export const CaseOthersCarousel = ({ data }) => {
     return (
         <Slider {...settings} className="cases-carousel w-full pb-10">
             {data.map((imagem, index) => (
-            <div>
+            <div key={imagem.id ?? imagem.slug}>
                 <Link href={route('Cases.caseCliente', {slug: imagem.slug})} className="relative block mx-2">
                     <img src={`/content/cases/thumbs/${imagem.imagem}`} className="carousel-image w-full transition-all" />
                 </Link>

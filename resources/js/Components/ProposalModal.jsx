@@ -5,8 +5,17 @@ import { ProposalForm } from './ProposalForm';
 export const ProposalModal = ({ isOpen, onClose }) => {
     // States
     const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+    const [isClosing, setIsClosing] = useState(isOpen);
 
     if (!isOpen) return null;
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            onClose();
+            setIsClosing(false);
+        }, 300);
+    };
 
     // Buttons Shadow Move
     const handleMouseMoveBtn = (e) => {
@@ -17,13 +26,13 @@ export const ProposalModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="modal-background fixed inset-0 flex z-50 bg-white bg-opacity-30" onMouseOver={handleMouseMoveBtn}>
-            <div className="absolute top-0 left-0 w-full h-full" onClick={onClose}></div>
+       <div className={`modal-background fixed inset-0 flex z-50 bg-white bg-opacity-30 transition-all ${isClosing ? 'opacity-0' : ''}`} onMouseOver={handleMouseMoveBtn}>
+            <div className="absolute top-0 left-0 w-full h-full" onClick={handleClose}></div>
             <div className="modal relative bg-black px-20 py-15 shadow-lg m-auto max-w-lg w-full max-h-screen overflow-auto z-[1]" data-lenis-prevent>
                 <h2 className="text-lg mb-4">Solicite sua proposta agora mesmo!</h2>
                     <ProposalForm gradientPosition={gradientPosition} />
                 <button 
-                    onClick={onClose} 
+                    onClick={handleClose} 
                     className="absolute top-6 right-6 text-zinc-300 hover:text-zinc-500 transition-all"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

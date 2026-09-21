@@ -89,7 +89,7 @@ class HomeController extends Controller
                 ];
             });
 
-        return Inertia::render('Home/page', [
+        return Inertia::render('Home/index', [
             'destaques' => $destaques,
             'clientes' => $clientes,
             'portfolios' => $portfolios

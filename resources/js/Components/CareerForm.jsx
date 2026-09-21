@@ -24,7 +24,7 @@ export const CareerForm = () => {
     const [aware, setAware] = useState(false);
     const [truth, setTruth] = useState(false);
     
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, clearErrors } = useForm({
         nome: '',
         email: '',
         whatsapp: '',
@@ -94,6 +94,7 @@ export const CareerForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        clearErrors();
 
         post(route('Carreiras.enviar'), {
             preserveScroll: true,
@@ -276,7 +277,7 @@ export const CareerForm = () => {
             <div className="mt-20 flex gap-6 flex-col lg:flex-row">
                 <button
                     type="submit"
-                    className={`block w-64 border border-primary border-2 text-center h-16 h-16 leading-[4rem] font-light uppercase mx-auto transition-all ${(!aware || !truth) && 'opacity-50 cursor-not-allowed'}`}
+                    className={`block w-64 border border-primary border-2 text-center h-16 leading-[4rem] font-light uppercase mx-auto transition-all ${(!aware || !truth) && 'opacity-50 cursor-not-allowed'}`}
                     disabled={(!aware || !truth) ? true : false }
                     >
                     Enviar

@@ -35,12 +35,12 @@ class CasesController extends Controller
                 return [
                     'id' => $caseCliente->id,
                     'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,
-                    'imagem' => $caseCliente->imagem,
+                    'imagem' => $caseCliente->imagem_grid,
                     'slug' => $caseCliente->slug
                 ];
             });
 
-        return Inertia::render('Cases/page', [
+        return Inertia::render('Cases/index', [
             'casesClientes' => $casesClientes,
         ]);
     }
@@ -48,12 +48,6 @@ class CasesController extends Controller
     public function caseCliente($slug) {
 
         $idioma = view()->shared('idioma');
-
-        $tamanhos = [
-            'grande' => 'col-span-6 sm:h-auto xl:h-[46rem] 2xl:h-[60rem]',
-            'medio' => 'col-span-3 h-[12rem] sm:h-auto sm:h-auto xl:h-[34rem] 2xl:h-[46rem]',
-            'pequeno' => 'col-span-2 h-[10rem] sm:h-auto xl:h-[24rem] 2xl:h-[35rem]'
-        ];
 
         $caseCliente = CaseCliente::query()
             ->where([
@@ -86,25 +80,6 @@ class CasesController extends Controller
         if(!$caseCliente) {
             return Inertia::location(route('Cases.index'));
         }
-
-        $caseClientePosterior = CaseCliente::query()
-            ->where([
-                'visivel' => true,
-                'excluido' => NULL,
-                'id' => $caseCliente->id + 1,
-            ])
-            ->first();
-
-        if (!$caseClientePosterior) {
-            $caseClientePosterior = CaseCliente::query()
-                ->where([
-                    'visivel' => true,
-                    'excluido' => NULL,
-                ])
-                ->first();
-        }
-
-        $caseClientePosterior = $caseClientePosterior->slug;
 
         $outrosCases = CaseCliente::query()
             ->where([
@@ -151,14 +126,16 @@ class CasesController extends Controller
 
         $caseCliente = [
             'id' => $caseCliente->id,
+            'ano' => $caseCliente->ano,
             'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,
-            'chamada' => $caseCliente->casesClientesIdiomas[0]->chamada,
-            'descricao' => $caseCliente->casesClientesIdiomas[0]->descricao,
-            'imagens' => $caseCliente->imagensCases->map(function ($imagem) use ($tamanhos) {
+            'servico' => $caseCliente->casesClientesIdiomas[0]->servico,
+            'campanha' => $caseCliente->casesClientesIdiomas[0]->campanha,
+            'contexto' => $caseCliente->casesClientesIdiomas[0]->contexto,
+            'imagens' => $caseCliente->imagensCases->map(function ($imagem) {
                 return [
                     'id' => $imagem->id,
                     'imagem' => $imagem->imagem,
-                    'tamanho' => $tamanhos[$imagem->tamanho_grid],
+                    'tamanho' => $imagem->tamanho_grid,
                 ];
             })
         ];
@@ -166,7 +143,6 @@ class CasesController extends Controller
         return Inertia::render('Cases/caseCliente', [
             'pagina' => $pagina,
             'caseCliente' => $caseCliente,
-            'caseClientePosterior' => $caseClientePosterior,
             'outrosCases' => $outrosCases
         ]);
     }

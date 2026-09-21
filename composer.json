@@ -10,7 +10,10 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5",
         "laravellegends/pt-br-validator": "^11.0",
+        "mcamara/laravel-localization": "^2.0",
+        "spatie/laravel-analytics": "^5.4",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
