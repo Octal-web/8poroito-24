@@ -208,9 +208,6 @@ const DefaultLayout = ({ children }) => {
                             <h3 className="font-secondary text-5xl md:text-7xl 2xl:text-8xl 2xl:-mb-1">Transformando</h3>
                             <h3 className="font-secondary text-5xl md:text-7xl 2xl:text-8xl md:-mb-1 2xl:-mb-5">Marcas em</h3>
                             <h1 className="relative font-secondary text-8xl md:text-[9.5rem] 2xl:text-[12.5rem] -ml-3 mb-5 z-[1]">
-                                <span className="relative mark-container font-bold z-[-1] ml-2">
-                                    <GreenMarker classList="scale-x-50 scale-y-50 md:scale-x-75 md:scale-y-75 2xl:scale-x-100 2xl:scale-y-100 bottom-0 md:left-[-6px] md:bottom-[25px] 2xl:bottom-[35px]" />
-                                </span>
                                 Emoção.
                             </h1>
                         </div>
