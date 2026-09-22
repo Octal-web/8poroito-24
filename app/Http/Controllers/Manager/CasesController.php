@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manager\PostCaseRequest;
 use App\Models\CaseCliente;
-use App\Models\CaseClienteIdioma;
 use App\Models\Idioma;
-
+use App\Services\Manager\CaseClienteService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Http\Requests\Manager\PostCaseRequest;
-
-use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
-
-use DeepCopy\DeepCopy;
 
 class CasesController extends Controller
 {
+    protected $caseClienteService;
+
+    public function __construct(CaseClienteService $caseClienteService) {
+        $this->caseClienteService = $caseClienteService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,13 +28,13 @@ class CasesController extends Controller
 
         $casesClientes = CaseCliente::query()
             ->where([
-                'excluido' => NULL
+                'excluido' => null
             ])
             ->with([
                 'casesClientesIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
                     ->orderBy('idioma_id', 'DESC');
                 }
@@ -43,7 +42,7 @@ class CasesController extends Controller
             ->orderBy('ordem', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($caseCliente) {
+            ->map(function ($caseCliente) {
                 return [
                     'id' => $caseCliente->id,
                     'visivel' => $caseCliente->visivel,
@@ -73,41 +72,18 @@ class CasesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function novo(PostCaseRequest $request) {
-        if($request->ajax()){
-            $idioma = inertia()->getShared('idioma');
-
-            $caseCliente = new CaseCliente;
-            $caseCliente_idioma = new CaseClienteIdioma;
-
-            $caseCliente->destaque = $request->destaque;
-            $caseCliente->ano = $request->ano;
-
-            $caseCliente->imagem = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('img')->extension());
-            $caseCliente->banner = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('img_banner')->extension());
-            $caseCliente->imagem_grid = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('img_grid')->extension());
-
-            $response = $caseCliente->save();
-
-            $caseCliente_idioma->titulo = $request->titulo;
-            $caseCliente_idioma->campanha = $request->campanha;
-            $caseCliente_idioma->servico = $request->servico;
-            $caseCliente_idioma->contexto = $request->contexto;
-            $caseCliente_idioma->titulo_pagina = $request->titulo_pagina;
-            $caseCliente_idioma->descricao_pagina = $request->descricao_pagina;
-
-            $caseCliente_idioma->case_cliente_id = $caseCliente->id;
-            $caseCliente_idioma->idioma_id = $idioma->id;
-
-            $response = $caseCliente_idioma->save();
-
-            if ($response) {
-                $image = $request->file('img')->move(public_path('content/cases/thumbs/'), $caseCliente->imagem);
-                $image = $request->file('img_banner')->move(public_path('content/cases/banner/'), $caseCliente->banner);
-                $image = $request->file('img_grid')->move(public_path('content/cases/grid/'), $caseCliente->imagem_grid);
-
-                return to_route('Manager.Cases.index')->with('message', ['type' => 'success', 'msg' => 'Registro salvo com sucesso!']);
-            }
+        if (!$request->ajax()) {
+            return to_route('Manager.Cases.index');
         }
+
+        $idioma = inertia()->getShared('idioma');
+        $response = $this->caseClienteService->create($request, $idioma->id);
+
+        if ($response) {
+            return to_route('Manager.Cases.index')->with('message', ['type' => 'success', 'msg' => 'Registro salvo com sucesso!']);
+        }
+
+        return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Não foi possível salvar o registro.']);
     }
 
     /**
@@ -120,7 +96,7 @@ class CasesController extends Controller
         if (!$id) {
             return Inertia::location(route('Manager.Cases.index'));
         }
-        
+
         $idiomas = Idioma::query()
             ->orderBy('padrao', 'DESC')
             ->orderBy('id', 'DESC')
@@ -135,13 +111,13 @@ class CasesController extends Controller
             ])
             ->with([
                 'casesClientesIdiomas' => function ($q) use ($idioma) {
-                    $q->when($idioma, function ($r) use($idioma) {
-                        $r->whereHas('idiomas', function($query) use($idioma) {
+                    $q->when($idioma, function ($r) use ($idioma) {
+                        $r->whereHas('idiomas', function ($query) use ($idioma) {
                             $query->where('codigo', $idioma);
                         });
                     })
                     ->when(!$idioma, function ($r) {
-                        $r->whereHas('idiomas', function($query) {
+                        $r->whereHas('idiomas', function ($query) {
                             $query->where('padrao', true);
                         });
                     });
@@ -149,7 +125,7 @@ class CasesController extends Controller
             ])
             ->first();
 
-        if(!$caseCliente) {
+        if (!$caseCliente) {
             return Inertia::location(route('Manager.Cases.index'));
         }
 
@@ -185,47 +161,21 @@ class CasesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function atualizar(PostCaseRequest $request, $id) {
-        if ($request->ajax()) {
-            $caseCliente = CaseCliente::whereNull('excluido')->findOrFail($id);
-            $idioma = Idioma::query()
-                ->when($request->query('lang'), function ($query) use ($request) {
-                    $query->where('codigo', $request->query('lang'));
-                }, function ($query) {
-                    $query->where('padrao', true);
-                })
-                ->firstOrFail();
+        if (!$request->ajax()) {
+            return to_route('Manager.Cases.index');
+        }
 
-            $caseCliente_idioma = CaseClienteIdioma::firstOrNew([
-                'case_cliente_id' => $caseCliente->id,
-                'idioma_id' => $idioma->id,
-            ]);
+        $response = $this->caseClienteService->update($request, $id);
 
-            $caseCliente->destaque = $request->boolean('destaque');
-            $caseCliente->ano = $request->ano;
+        if ($response === null) {
+            return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registro não encontrado!']);
+        }
 
-            foreach (['img' => ['imagem', 'thumbs'], 'img_banner' => ['banner', 'banner'], 'img_grid' => ['imagem_grid', 'grid']] as $input => [$campo, $pasta]) {
-                if ($request->hasFile($input)) {
-                    $anterior = $caseCliente->$campo;
-                    $nome = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file($input)->extension());
-                    $request->file($input)->move(public_path('content/cases/' . $pasta), $nome);
-                    $caseCliente->$campo = $nome;
-                    if ($anterior) {
-                        File::delete(public_path('content/cases/' . $pasta . '/' . $anterior));
-                    }
-                }
-            }
-
-            foreach (['titulo', 'campanha', 'servico', 'contexto', 'titulo_pagina', 'descricao_pagina'] as $campo) {
-                $caseCliente_idioma->$campo = $request->input($campo);
-            }
-
-            $caseCliente->save();
-            $caseCliente_idioma->save();
-
+        if ($response) {
             return to_route('Manager.Cases.index')->with('message', ['type' => 'success', 'msg' => 'Registro salvo com sucesso!']);
         }
 
-        return to_route('Manager.Cases.index');
+        return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Não foi possível salvar o registro.']);
     }
 
     /**
@@ -236,26 +186,21 @@ class CasesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function excluir(Request $request, $id) {
-        if ($request->ajax()){
-            if (!$id) {
-                return $request->header('referer');
-            }
-
-            $exclusao = Cliente::query()
-                ->where([
-                    'excluido' => NULL,
-                    'id' => $id
-                ])
-                ->update([
-                    'excluido' => Carbon::now()
-                ]);
-
-            if ($exclusao == true) {
-                return redirect()->back()->with('message', ['type' => 'alert', 'msg' => 'Registro excluído com sucesso.']);
-            } else {
-                return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Não foi possível excluir o registro.']);
-            }
+        if (!$request->ajax()) {
+            return $request->header('referer');
         }
+
+        if (!$id) {
+            return $request->header('referer');
+        }
+
+        $response = $this->caseClienteService->delete($id);
+
+        if ($response) {
+            return redirect()->back()->with('message', ['type' => 'alert', 'msg' => 'Registro excluído com sucesso.']);
+        }
+
+        return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Não foi possível excluir o registro.']);
     }
 
     /**
@@ -266,69 +211,48 @@ class CasesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function visibilidade(Request $request, $id) {
-        if ($request->ajax()){
-            if (!$id) {
-                return redirect()->back()->with(['type' => 'error', 'message' => 'Registro não encontrado!']);
-            }
-
-            $response = Cliente::query()
-                ->where([
-                    'id' => $id,
-                    'excluido' => NULL
-                ])
-                ->first();
-
-            if (!$response) {
-                return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registro não encontrado!']);
-            }
-    
-            $response->visivel = 1 - $response->visivel;
-            $response->save();
-    
-            if ($response) {
-                return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Visibilidade alterada com sucesso!']);
-            }
-            else {
-                return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Visibilidade não alterada!']);
-            }
+        if (!$request->ajax()) {
+            return $request->header('referer');
         }
 
-        return $request->header('referer');
+        if (!$id) {
+            return redirect()->back()->with(['type' => 'error', 'message' => 'Registro não encontrado!']);
+        }
+
+        $response = $this->caseClienteService->toggleVisibility($id);
+
+        if ($response === null) {
+            return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registro não encontrado!']);
+        }
+
+        if ($response) {
+            return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Visibilidade alterada com sucesso!']);
+        }
+
+        return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Visibilidade não alterada!']);
     }
 
     /**
      * Update the order of the specified resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function ordenar(Request $request) {
-        if ($request->ajax()){
-            $erros = [];
-
-            if ($request->odr && is_array($request->odr)) {
-                foreach ($request->odr as $key => $value) {
-                    $registro = Cliente::query()
-                        ->where([
-                            'excluido' => NULL,
-                            'id' => $value
-                        ])
-                        ->update([
-                            'ordem' => $key,
-                        ]);
-
-                    $errors[] = $registro;
-                }
-            }
-
-            if (!count($erros)) {
-                return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Registros reordenados com sucesso!']);
-            } else {
-                return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registros não reordenados, tente novamente mais tarde!']);
-            }
+        if (!$request->ajax()) {
+            return redirect()->back();
         }
 
-        return redirect()->back();
+        if (!$request->odr || !is_array($request->odr)) {
+            return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registros não reordenados, tente novamente mais tarde!']);
+        }
+
+        $response = $this->caseClienteService->order($request->odr);
+
+        if ($response) {
+            return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Registros reordenados com sucesso!']);
+        }
+
+        return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registros não reordenados, tente novamente mais tarde!']);
     }
 }
