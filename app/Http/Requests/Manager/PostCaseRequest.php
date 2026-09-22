@@ -30,7 +30,7 @@ class PostCaseRequest extends FormRequest
             'img_banner' => inertia()->getShared('action') == 'novo' ? 'required|image|mimes:png,jpg|max:2048' : 'nullable|image|mimes:png,jpg|max:2048',
             'img_grid' => inertia()->getShared('action') == 'novo' ? 'required|image|mimes:png,jpg|max:2048' : 'nullable|image|mimes:png,jpg|max:2048',
             'servico'  => 'required|max:150',
-            'contexto'  => 'required|max:220',
+            'contexto'  => 'required|max:1000',
             'titulo_pagina'  => 'required|max:150',
             'descricao_pagina'  => 'required|max:220',
         ];
@@ -67,7 +67,7 @@ class PostCaseRequest extends FormRequest
             'servico.required'  => 'Por favor, informe o serviço.',
             'servico.max'  => 'O serviço não pode exceder 150 caracteres.',
             'contexto.required'  => 'Por favor, informe o contexto.',
-            'contexto.max'  => 'O contexto não pode exceder 220 caracteres.',
+            'contexto.max'  => 'O contexto não pode exceder 1000 caracteres.',
             'titulo_pagina.required'  => 'Por favor, informe o título da página.',
             'titulo_pagina.max'  => 'O título da página não pode exceder 150 caracteres.',
             'descricao_pagina.required'  => 'Por favor, informe a descrição da página.',
