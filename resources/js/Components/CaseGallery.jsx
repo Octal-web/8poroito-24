@@ -15,6 +15,7 @@ const sizes = {
 };
 
 export const CaseGallery = ({ images = [], title = '' }) => {
+    console.log(images)
     const galleryRef = useRef(null);
     const lenisRef = useSmoothScroll();
     const [index, setIndex] = useState(-1);

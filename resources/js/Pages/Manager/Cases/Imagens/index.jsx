@@ -94,7 +94,7 @@ const Page = () => {
                                 <div key={index} className="relative h-full pb-12">
                                     <IndividualImage key={index} imagensPath="/content/cases/images/" individualContent={image} controller="Cases.Imagens" />
                                     <div className="absolute w-full z-[10] bottom-1.5">
-                                        <CaseImageSize imageId={image.id} currentSize={image.tamanho_grid} />
+                                        <CaseImageSize imageId={image.id} currentSize={image.tamanho} />
                                     </div>
                                 </div>
 

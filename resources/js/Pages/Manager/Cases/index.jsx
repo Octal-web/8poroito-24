@@ -20,6 +20,8 @@ const Page = () => {
         // { label: 'Projects', link: 'Home.index' },
     ];
 
+    console.log(idiomas)
+
     const contentCases = {
         nome: ['Cases', 'case'],
         controller: 'Cases',
