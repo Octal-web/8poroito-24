@@ -135,7 +135,7 @@ class CasesController extends Controller
                 return [
                     'id' => $imagem->id,
                     'imagem' => $imagem->imagem,
-                    'tamanho' => $imagem->tamanho_grid,
+                    'tamanho' => $imagem->tamanho,
                 ];
             })
         ];

@@ -122,7 +122,7 @@ class ImagensCasesController extends Controller
                     'id' => $id
                 ])
                 ->update([
-                    'tamanho_grid' => $request->tamanho
+                    'tamanho' => $request->tamanho
                 ]);
 
             if ($imagem == true) {

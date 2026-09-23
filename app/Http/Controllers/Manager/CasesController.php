@@ -15,6 +15,8 @@ class CasesController extends Controller
     protected $caseClienteService;
 
     public function __construct(CaseClienteService $caseClienteService) {
+        
+        parent::__construct();
         $this->caseClienteService = $caseClienteService;
     }
 
