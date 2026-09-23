@@ -35,7 +35,7 @@ class CasesController extends Controller
                 return [
                     'id' => $caseCliente->id,
                     'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,
-                    'imagem' => $caseCliente->imagem_grid,
+                    'imagem' => $caseCliente->imagem,
                     'slug' => $caseCliente->slug
                 ];
             });
