@@ -35,7 +35,7 @@ class CasesController extends Controller
                 return [
                     'id' => $caseCliente->id,
                     'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,
-                    'imagem' => $caseCliente->imagem,
+                    'imagem' => asset('content/cases/grid/' . $caseCliente->imagem_grid),
                     'slug' => $caseCliente->slug
                 ];
             });
@@ -135,6 +135,8 @@ class CasesController extends Controller
                 return [
                     'id' => $imagem->id,
                     'imagem' => $imagem->imagem,
+                    'tipo' => $imagem->tipo,
+                    'poster' => $imagem->poster,
                     'tamanho' => $imagem->tamanho,
                 ];
             })

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlay, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { ConfirmModal } from './ConfirmModal';
 
@@ -44,7 +44,20 @@ export const IndividualImage = ({ individualContent, imagensPath, imagensClass, 
         <>
             <div className="group relative flex justify-center overflow-hidden border select-none h-full">
                 <div className="absolute inset-0.5 bg-black bg-opacity-0 transition-all group-hover:bg-opacity-20 duration-300"></div>
-                <img src={`${imagensPath}${individualContent.imagem}`} className="w-full p-0.5 object-cover" />
+                {individualContent.tipo === 'video' ? (
+                    <>
+                        {individualContent.poster ? (
+                            <img src={`${imagensPath}${individualContent.poster}`} className="w-full p-0.5 object-cover" />
+                        ) : (
+                            <video src={`/content/cases/videos/${individualContent.imagem}`} className="w-full p-0.5 object-cover" muted playsInline preload="metadata" />
+                        )}
+                        <span className="pointer-events-none absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white">
+                            <FontAwesomeIcon icon={faPlay} className="text-xs" />
+                        </span>
+                    </>
+                ) : (
+                    <img src={`${imagensPath}${individualContent.imagem}`} className="w-full p-0.5 object-cover" />
+                )}
 
                 <ul className="absolute bg-white top-0.5 right-0.5 grid grid-cols-2 items-center transition-all translate-x-full group-hover:translate-x-0 sort-ignore">
                     <li className="py-1.5 px-1 h-full flex items-center hover:bg-gray-100">

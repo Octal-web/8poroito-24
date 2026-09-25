@@ -17,6 +17,8 @@ use DeepCopy\DeepCopy;
 
 class ImagensCasesController extends Controller
 {
+    const VIDEO_MAX_BYTES = 20 * 1024 * 1024;
+
     /**
      * Display a listing of the resource.
      *
@@ -80,10 +82,35 @@ class ImagensCasesController extends Controller
                 return Inertia::location(route('Manager.Cases.index'));
             }
 
+            $request->validate([
+                'images' => 'required|array',
+                'images.*.img' => 'required|file|mimetypes:image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime',
+                'images.*.poster' => 'nullable|file|mimetypes:image/jpeg,image/png,image/webp|max:5120',
+            ], [
+                'images.*.img.mimetypes' => 'Formato não suportado. Envie JPG, PNG, WEBP, MP4, WEBM ou MOV.',
+            ]);
+
+            foreach ($request->file('images') as $key => $image) {
+                $isVideo = str_starts_with((string) $image['img']->getMimeType(), 'video/');
+
+                if ($isVideo && $image['img']->getSize() > self::VIDEO_MAX_BYTES) {
+                    return redirect()->back()->withErrors(["images.$key.img" => 'Os vídeos não podem passar de 20MB.']);
+                }
+            }
+
+            File::ensureDirectoryExists(public_path('content/cases/videos/'));
+
             foreach ($request->file('images') as $image) {
+                $isVideo = str_starts_with((string) $image['img']->getMimeType(), 'video/');
+
                 $imagem = new ImagemCase;
 
                 $imagem->imagem = md5(uniqid((string) rand(), true)) . '.' . strtolower($image['img']->extension());
+                $imagem->tipo = $isVideo ? 'video' : 'imagem';
+
+                if ($isVideo && !empty($image['poster'])) {
+                    $imagem->poster = md5(uniqid((string) rand(), true)) . '.' . strtolower($image['poster']->extension());
+                }
 
                 $imagem->case_cliente_id = $caseCliente->id;
                 $imagem->tamanho = 'grande';
@@ -91,7 +118,11 @@ class ImagensCasesController extends Controller
                 $response = $imagem->save();
 
                 if ($response) {
-                    $image['img']->move(public_path('content/cases/images/'), $imagem->imagem);
+                    $image['img']->move(public_path($isVideo ? 'content/cases/videos/' : 'content/cases/images/'), $imagem->imagem);
+
+                    if ($imagem->poster) {
+                        $image['poster']->move(public_path('content/cases/images/'), $imagem->poster);
+                    }
                 } else {
                     return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Erro ao salvar imagem']);
                 }
@@ -213,17 +244,23 @@ class ImagensCasesController extends Controller
             $erros = [];
 
             if ($request->odr && is_array($request->odr)) {
-                foreach ($request->odr as $key => $value) {
-                    $registro = ImagemCase::query()
+                foreach ($request->odr as $key => $item) {
+                    $imagemId = is_array($item) ? ($item['id'] ?? null) : $item;
+                    $ordem = is_array($item) ? ($item['ordem'] ?? $key) : $key;
+
+                    if (!is_numeric($imagemId) || !is_numeric($ordem)) {
+                        $erros[] = $item;
+                        continue;
+                    }
+
+                    ImagemCase::query()
                         ->where([
                             'excluido' => NULL,
-                            'id' => $value
+                            'id' => (int) $imagemId
                         ])
                         ->update([
-                            'ordem' => $key,
+                            'ordem' => (int) $ordem,
                         ]);
-
-                    $errors[] = $registro;
                 }
             }
 
