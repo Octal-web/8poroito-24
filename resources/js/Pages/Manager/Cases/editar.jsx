@@ -24,6 +24,9 @@ const Page = () => {
             { titulo: 'Destaque?', name: 'destaque', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8 lg:col-span-2', tipo: 'check'}
         ],
         [
+            { titulo: 'Slug', name: 'slug', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8', tipo: 'texto', max: 255 },
+        ],
+        [
             { titulo: 'Campanha', name: 'campanha', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8', tipo: 'texto', max: 255 },
         ],
         [
@@ -74,7 +77,7 @@ const Page = () => {
                     className="flex items-center border border-stroke bg-white px-3 py-2 float-right rounded-md transition-all hover:bg-slate-100 ml-2"
                 >   
                     <FontAwesomeIcon icon={faImage} className="text-slate-700 mr-2" />
-                    Imagens
+                    Imagens/Vídeos
                 </Link>
 
                 <div className="mt-10">

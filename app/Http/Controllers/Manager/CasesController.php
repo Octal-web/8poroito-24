@@ -136,6 +136,7 @@ class CasesController extends Controller
         $caseCliente = [
             'id' => $caseCliente->id,
             'ano' => $caseCliente->ano,
+            'slug' => $caseCliente->slug ?? '',
             'destaque' => $caseCliente->destaque ? true : false,
             'imagem' => $caseCliente->imagem,
             'banner' => $caseCliente->banner,

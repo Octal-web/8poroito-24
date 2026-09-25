@@ -7,7 +7,7 @@ import { faImages, faSave, faArrowLeft } from '@fortawesome/free-solid-svg-icons
 
 import AdminLayout from '../../../../Layouts/AdminLayout';
 import { Breadcrumb } from '../../../../Components/Manager/Breadcrumb';
-import { ImageUploader } from '../../../../Components/Manager/ImageUploader';
+import { MediaUploader } from '../../../../Components/Manager/MediaUploader';
 import { IndividualImage } from '../../../../Components/Manager/IndividualImage';
 import { CaseImageSize } from '../../../../Components/Manager/CaseImageSize';
 
@@ -20,16 +20,14 @@ const Page = () => {
     const [isUpdated, setIsUpdated] = useState(false);
     const [isReadyToUpload, setIsReadyToUpload] = useState(false);
 
-    const { data, setData, post } = useForm({
+    const { data, setData, post, errors } = useForm({
         images: []
     });
 
     const handleImageUpload = (processedImages) => {
-        const formData = new FormData();
-        
-        const imagesData = processedImages.map(({ original }) => ({
-            img: original
-        }));
+        const imagesData = processedImages.map(({ original, poster }) => (
+            poster ? { img: original, poster } : { img: original }
+        ));
 
         setData('images', imagesData);
         setIsReadyToUpload(true);
@@ -53,7 +51,6 @@ const Page = () => {
                 ordem: index
             }));
 
-            console.log(orderedData);
             
             setData(prevData => ({ odr: orderedData }));
             setIsUpdated(true);
@@ -103,7 +100,12 @@ const Page = () => {
                     </div>
 
                     <div className="lg:col-span-1 min-h-[calc(100vh-13rem)]">
-                        <ImageUploader onUpload={handleImageUpload} crop={false} />
+                        <MediaUploader onUpload={handleImageUpload} />
+                        {Object.keys(errors).length > 0 && (
+                            <ul className="mt-3 text-sm text-red-500">
+                                {[...new Set(Object.values(errors))].map((error) => <li key={error}>{error}</li>)}
+                            </ul>
+                        )}
                     </div>
                 </div>
             </div>

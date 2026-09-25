@@ -24,6 +24,7 @@ class CaseClienteService
 
         $caseCliente->destaque = $request->destaque;
         $caseCliente->ano = $request->ano;
+        $caseCliente->slug = $request->slug;
         $caseCliente->imagem = md5(uniqid((string) rand(), true)) . '.webp';
         $caseCliente->banner = md5(uniqid((string) rand(), true)) . '.webp';
         $caseCliente->imagem_grid = md5(uniqid((string) rand(), true)) . '.webp';
@@ -93,6 +94,7 @@ class CaseClienteService
 
         $caseCliente->destaque = $request->boolean('destaque');
         $caseCliente->ano = $request->ano;
+        $caseCliente->slug = $request->slug;
 
         foreach (['titulo', 'campanha', 'servico', 'contexto', 'titulo_pagina', 'descricao_pagina'] as $campo) {
             $caseClienteIdioma->$campo = $request->input($campo);

@@ -27,7 +27,7 @@ export const CasesList = ({ url = '', src = '', index, ...props }) => {
         <>
             <Link ref={galleryRef} href={route('Cases.caseCliente', {slug: url})} className="custom-item w-full h-40 sm:h-70 lg:h-80 overflow-hidden">
                 <img
-                    src={`/content/cases/grid/${src}`}
+                    src={src}
                     className="w-full h-full object-cover grayscale transition-all transform hover:grayscale-0 hover:scale-110"
                 />
             </Link>
