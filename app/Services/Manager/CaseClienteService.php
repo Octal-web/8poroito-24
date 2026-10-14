@@ -9,6 +9,7 @@ use App\Models\Idioma;
 use App\Services\ImageCompressor;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class CaseClienteService
 {
@@ -22,9 +23,9 @@ class CaseClienteService
         $caseCliente = new CaseCliente;
         $caseClienteIdioma = new CaseClienteIdioma;
 
-        $caseCliente->destaque = $request->destaque;
+        $caseCliente->destaque = $request->boolean('destaque');
         $caseCliente->ano = $request->ano;
-        $caseCliente->slug = $request->slug;
+        $caseCliente->slug = $this->generateSlug($request->titulo);
         $caseCliente->imagem = md5(uniqid((string) rand(), true)) . '.webp';
         $caseCliente->banner = md5(uniqid((string) rand(), true)) . '.webp';
         $caseCliente->imagem_grid = md5(uniqid((string) rand(), true)) . '.webp';
@@ -94,7 +95,10 @@ class CaseClienteService
 
         $caseCliente->destaque = $request->boolean('destaque');
         $caseCliente->ano = $request->ano;
-        $caseCliente->slug = $request->slug;
+
+        if ($idioma->padrao && $caseClienteIdioma->titulo !== $request->titulo) {
+            $caseCliente->slug = $this->generateSlug($request->titulo, $caseCliente->id);
+        }
 
         foreach (['titulo', 'campanha', 'servico', 'contexto', 'titulo_pagina', 'descricao_pagina'] as $campo) {
             $caseClienteIdioma->$campo = $request->input($campo);
@@ -173,5 +177,22 @@ class CaseClienteService
         }
 
         return !count($erros);
+    }
+
+    private function generateSlug($titulo, $ignoreId = null) {
+        $base = Str::slug($titulo);
+        $slug = $base;
+        $i = 2;
+
+        while (CaseCliente::query()
+            ->where('slug', $slug)
+            ->when($ignoreId, function ($query) use ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            })
+            ->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+
+        return $slug;
     }
 }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useMouseGradient } from '../../Contexts/MouseGradientContext';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Map } from '../Map';
@@ -7,7 +8,7 @@ import { ContactForm } from '../ContactForm';
 gsap.registerPlugin(ScrollTrigger);
 
 export function ContactSection() {
-    const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+    const gradientPosition = useMouseGradient();
 
     const leftRef = useRef(null);
     const rightRef = useRef(null);
@@ -33,14 +34,8 @@ export function ContactSection() {
         return () => context.revert();
     }, []);
 
-    const handleMouseMoveBtn = (e) => {
-        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setGradientPosition({ x, y });
-    };
     return (
-        <section className="relative my-20 overflow-hidden" onMouseOver={handleMouseMoveBtn}>
+        <section className="relative my-20 overflow-hidden">
             <div className="relative container">
                 <div className="flex flex-col md:flex-row gap-5">
                     <div className="w-full mb-20 md:mb-0" ref={leftRef}>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useMouseGradient } from '../Contexts/MouseGradientContext';
 import { Link, Head } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import Lenis from '@studio-freight/lenis';
 import { SmoothScrollContext } from '../Contexts/SmoothScrollContext';
 
-import { GreenMarker } from '../Components/GreenMarker';
+// import { GreenMarker } from '../Components/GreenMarker';
 import { ProposalModal } from '../Components/ProposalModal';
 import { CookieModal } from '../Components/CookieModal'; 
 
@@ -12,7 +13,9 @@ const DefaultLayout = ({ children }) => {
     const { controller, pagina, notifyCookie } = usePage().props;
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+    const gradientPosition = useMouseGradient();
+    const careersGradientPosition = useMouseGradient({ duration: 2 });
+    const whatsappGradientPosition = useMouseGradient({ duration: 5 });
     const [isModalOpen, setModalOpen] = useState(false);
     const [trackingEnabled, setTrackingEnabled] = useState(false);
 
@@ -52,13 +55,6 @@ const DefaultLayout = ({ children }) => {
 
     const handleCloseModal = () => {
         setModalOpen(false);
-    };
-
-    const handleMouseMoveBtn = (e) => {
-        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setGradientPosition({ x, y });
     };
 
     const acceptCookies = () => {
@@ -113,12 +109,12 @@ const DefaultLayout = ({ children }) => {
                         <div className="flex items-center justify-between w-full my-8 xl:my-10 2xl:my-15">
                             <h1 className="flex items-center">
                                 <Link href={route('Home.index')} className="flex items-center">
-                                    <img src={`/site/img/logo.png`} alt="Logo" className="block w-30 md:w-auto" />
+                                    <img src={`/site/img/logo.png`} alt="Logo" className="block w-30 md:w-40" />
                                 </Link>
                             </h1>
 
                             <div className={`${isMenuOpen ? 'transform' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[3] bg-black w-full h-full transition-all duration-500`}></div>
-                            <div className={`${isMenuOpen ? 'transform delay-300' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[4] bg-black w-full h-full transition-all duration-500`} onMouseMove={handleMouseMoveBtn}>
+                            <div className={`${isMenuOpen ? 'transform delay-300' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[4] bg-black w-full h-full transition-all duration-500`}>
                                 <div className="container flex flex-col justify-evenly items-center min-h-full">
                                     <button className="w-fit mx-auto text-xs" onClick={toggleMenu}>
                                         <div className="relative inline-block w-4 h-4 -mb-1">
@@ -201,111 +197,60 @@ const DefaultLayout = ({ children }) => {
                 {children}
             </main>
 
-            <footer className="bg-black bg-cover bg-no-repeat bg-right py-20" style={{backgroundImage: 'url(/site/img/footerBg.jpg)'}} onMouseMove={handleMouseMoveBtn}>
+            <footer className="bg-black py-16 text-white md:py-20">
                 <div className="container">
-                    <div className="md:max-w-[60%]">
-                        <div className="text-white">
-                            <h3 className="font-secondary text-5xl md:text-7xl 2xl:text-8xl 2xl:-mb-1">Transformando</h3>
-                            <h3 className="font-secondary text-5xl md:text-7xl 2xl:text-8xl md:-mb-1 2xl:-mb-5">Marcas em</h3>
-                            <h1 className="relative font-secondary text-8xl md:text-[9.5rem] 2xl:text-[12.5rem] -ml-3 mb-5 z-[1]">
-                                Emoção.
-                            </h1>
+                    <h2 className="text-center text-2xl font-semibold uppercase tracking-[0.18em] sm:text-3xl md:text-4xl lg:text-5xl">O poder da marca</h2>
+
+                    <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 divide-y divide-white/15 md:mt-28 md:grid-cols-3 md:divide-x md:divide-y-0 lg:mt-40">
+                        <nav aria-label="Navegação do rodapé" className="pb-8 text-sm md:pb-0 md:pr-8 lg:pr-12">
+                            <ul className="space-y-2 font-medium">
+                                <li><Link href={route('Home.index')} className="uppercase transition-opacity hover:opacity-70">Home</Link></li>
+                                <li><Link href={route('Institucional.index')} className="transition-opacity hover:opacity-70">A 8poroito</Link></li>
+                                <li><Link href={route('Cases.index')} className="uppercase transition-opacity hover:opacity-70">Cases</Link></li>
+                                <li><Link href={route('Contato.index')} className="uppercase transition-opacity hover:opacity-70">Contato</Link></li>
+                            </ul>
+                            <Link href={route('Politicas.privacidade')} className="mt-6 inline-block text-white/50 transition-colors hover:text-white">Política de Privacidade</Link>
+                        </nav>
+
+                        <div className="py-8 md:px-8 md:py-0 lg:px-12">
+                            <p className="mb-5 text-sm">Quer fazer parte do nosso time?</p>
+                            <Link
+                                href={route('Carreiras.index')}
+                                className="button relative flex min-h-[3.5rem] w-full max-w-[16rem] items-center justify-center overflow-hidden border border-white/60 px-4 py-3 text-center text-sm font-light uppercase hover:border-white"
+                                style={{ background: `radial-gradient(circle at ${careersGradientPosition.x}% ${careersGradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)` }}
+                            >Trabalhe Conosco</Link>
                         </div>
 
-                        <div className="font-light md:text-lg text-white mt-10 md:mt-0">
-                            <p><span className="font-bold">Bora entrar em uma relação “papo reto”<br/>e conquistar consumidores leais</span> com uma<br className="hidden md:inline"/> gestão de marca feita por quem ama o que faz?</p>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row md:items-end text-white">
-                            <div className="mt-20 md:pr-3 w-fit max-w-sm pb-15 md:pb-0 border-b md:border-b-0 md:border-r border-custom-gray">
-                                <h4 className="font-secondary text-5xl mb-3">Somos onipresentes</h4>
-                                <div className="md:text-lg mr-5 mb-3">Mas você pode nos encontrar fisicamente em:</div>
-                                <div className="text-sm mb-5">
-
-                                    <p>
-                                        <a href="https://www.google.com/maps/place/R.+Jo%C3%A3o+Goulart,+696+-+sala+04,+95720-000+Garibaldi+-+RS" target="_blank" rel="noopener noreferrer" className="transition-all hover:opacity-80">
-                                            R. João Goulart, 696 - sala 04<br/>
-                                            São José, Garibaldi - RS, 95720-000
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536" target="_blank" rel="noopener noreferrer" className="transition-all hover:opacity-80">
-                                            (54) 99705-5536
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="mailto:falecom@8poroito.com.br" className="transition-all hover:opacity-80">
-                                            falecom@8poroito.com.br
-                                        </a>
-                                    </p>
-                                </div>
-                                <div className="mb-5">Quer fazer parte dos nosso time?</div>
-                                <Link
-                                    href={route('Carreiras.index')} 
-                                    className="button relative overflow-hidden block w-64 border border-white text-center h-16 leading-[4rem] font-light uppercase"
-                                    style={{
-                                        background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)`,
-                                    }}
-                                >Trabalhe Conosco</Link>
-                            </div>
-
-                            <div className="mt-15 md:mt-0 md:pl-20 flex flex-wrap md:block">
-                                <div className="text-sm font-medium mb-7">
-                                    <ul>
-                                        <li className="mb-2">
-                                            <Link href={route('Home.index')} className="uppercase transition-all hover:opacity-80">Home</Link>
-                                        </li>
-                                        <li className="mb-2">
-                                            <Link href={route('Institucional.index')} className="transition-all hover:opacity-80">A 8poroito</Link>
-                                        </li>
-                                        <li className="mb-2">
-                                            <Link href={route('Cases.index')} className="uppercase transition-all hover:opacity-80">Cases</Link>
-                                        </li>
-                                        <li className="mb-2">
-                                            <Link href={route('Contato.index')} className="uppercase transition-all hover:opacity-80">Contato</Link>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div className="text-sm mb-15 opacity-50 ml-20 md:ml-0">
-                                    <ul>
-                                        <li className="mb-2">
-                                            <Link href={route('Politicas.privacidade')} className="transition-all hover:opacity-80">Política de Privacidade</Link>
-                                        </li>
-                                        {/*<li className="mb-2">
-                                            <a href="/" className="transition-all hover:opacity-80">Política de Cookies</a>
-                                        </li>
-                                        <li className="mb-2">
-                                            <a href="/" className="transition-all hover:opacity-80">Termos e Condições</a>
-                                        </li>*/}
-                                    </ul>
-                                </div>
-
-                                <a
-                                    href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536"
-                                    className="button relative overflow-hidden block w-64 border border-white text-center h-16 font-light uppercase flex gap-3 justify-center items-center"
-                                    target="_blank"
-                                    style={{
-                                        background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)`,
-                                    }}
-                                ><img src={`/site/img/whatsapp.png`} /> WhatsApp</a>
-                            </div>
+                        <div className="pt-8 md:pl-8 md:pt-0 lg:pl-12">
+                            <address className="mb-6 space-y-2 text-sm not-italic leading-relaxed">
+                                <a href="https://www.google.com/maps/place/R.+Jo%C3%A3o+Goulart,+696+-+sala+04,+95720-000+Garibaldi+-+RS" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">
+                                    R. João Goulart, 696 - sala 04<br/>
+                                    São José, Garibaldi - RS, 95720-000
+                                </a>
+                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99705-5536</a>
+                                <a href="mailto:falecom@8poroito.com.br" className="block break-words transition-opacity hover:opacity-70">falecom@8poroito.com.br</a>
+                            </address>
+                            <a
+                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536"
+                                className="button relative flex min-h-[3.5rem] w-full max-w-[16rem] items-center justify-center gap-3 overflow-hidden border border-white/60 px-4 py-3 text-sm font-light uppercase hover:border-white"
+                                target="_blank" rel="noopener noreferrer"
+                                style={{ background: `radial-gradient(circle at ${whatsappGradientPosition.x}% ${whatsappGradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)` }}
+                            ><img src="/site/img/whatsapp.png" alt="" className="h-7 w-7 object-contain" /> WhatsApp</a>
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-10 sm:gap-20 pt-20 sm:pb-10 items-center">
-                        <div className="flex flex-col sm:flex-row gap-5 items-center opacity-35">
-                            <img src={`/site/img/logo.png`} alt="Logo" className="block w-28" />
-                            <div className="text-xs text-white">
-                                © 2024 8poroito. Todos os direitos reservados.
-                            </div>                     
+                    <div className="mt-16 flex flex-col items-center justify-center gap-7 md:mt-28 md:flex-row md:gap-12 lg:mt-36">
+                        <div className="flex flex-col items-center gap-4 text-white/40 sm:flex-row">
+                            <Link href={route('Home.index')} aria-label="8poroito — Home" className="opacity-40 transition-opacity hover:opacity-100">
+                                <img src="/site/img/logo.png" alt="8poroito" className="block w-28" />
+                            </Link>
+                            <p className="text-center text-xs">© {new Date().getFullYear()} 8poroito. Todos os direitos reservados.</p>
                         </div>
-
-                        <ul className="flex gap-5">
-                            <li><a href="https://www.instagram.com/8poroito/" target="_blank"><img className="w-6" src={`/site/img/instagram.png`} alt="instagram" /></a></li>
-                            <li><a href="https://www.facebook.com/8poroito/" target="_blank"><img className="w-6" src={`/site/img/facebook.png`} alt="facebook" /></a></li>
-                            <li><a href="https://www.behance.net/agencia8poroito" target="_blank"><img className="w-6" src={`/site/img/behance.png`} alt="behance" /></a></li>
-                            <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank"><img className="w-6" src={`/site/img/linkedin.png`} alt="linkedin" /></a></li>
+                        <ul aria-label="Redes sociais" className="flex items-center gap-5">
+                            <li><a href="https://www.instagram.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/instagram.png" alt="Instagram" /></a></li>
+                            <li><a href="https://www.facebook.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/facebook.png" alt="Facebook" /></a></li>
+                            <li><a href="https://www.behance.net/agencia8poroito" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/behance.png" alt="Behance" /></a></li>
+                            <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/linkedin.png" alt="LinkedIn" /></a></li>
                         </ul>
                     </div>
                 </div>

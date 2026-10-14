@@ -4,6 +4,7 @@ import { useSmoothScroll } from '../../Contexts/SmoothScrollContext';
 
 export function HomeHeroSection() {
     const [hoveredLetter, setHoveredLetter] = useState(null);
+    const [isVideoLoading, setIsVideoLoading] = useState(true);
     const lenisRef = useSmoothScroll();
 
     const handleScroll = () => {
@@ -48,14 +49,20 @@ export function HomeHeroSection() {
     };
 
     return (
-        <section className="relative">
+        <section className="relative bg-black">
             <div className="absolute m-auto left-0 right-0 w-full h-full">
                 <VideoPlayer
                     src="/site/video/videoBanner.mp4"
                     isPlaying={true}
                     classList={['w-full', 'h-full', 'object-cover']}
                     autoplay={true}
+                    onPlaying={() => setIsVideoLoading(false)}
+                    onBlocked={() => setIsVideoLoading(false)}
                 />
+            </div>
+
+            <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black transition-opacity duration-700 ${isVideoLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                <div className="w-12 h-12 rounded-full border-4 border-white/20 border-t-white animate-spin" role="status" aria-label="Carregando"></div>
             </div>
 
             <div className="relative max-h-[100vh] pt-[7%] 2xl:pt-[12%] pb-10 h-screen">
