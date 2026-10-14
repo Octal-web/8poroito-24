@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { FullPageProgress } from './Components/FullPageProgress';
+import { MouseGradientProvider } from './Contexts/MouseGradientContext';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -15,10 +16,10 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <>
+            <MouseGradientProvider>
                 <FullPageProgress />
                 <App {...props} />
-            </>
+            </MouseGradientProvider>
         );
     },
     progress: {

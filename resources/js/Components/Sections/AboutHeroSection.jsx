@@ -30,15 +30,15 @@ export function AboutHeroSection() {
     return (
         <section className="relative bg-black pt-30 sm:pt-40 overflow-hidden">
             <div className="-mb-20">
-                <AboutCarousel reverse={true} text="Transformando marcas em emoção" />
+                <AboutCarousel reverse={true} text="O poder da marca" />
             </div>
 
             <div>
-                <AboutCarousel reverse={false} text="Transformando marcas em emoção" />
+                <AboutCarousel reverse={false} text="O poder da marca" />
             </div>
 
             <div className="absolute top-0 left-0 w-full h-full z-[1]" style={{background: 'radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)'}}></div>
-            <div className="relative container max-w-medium z-[1] xl:-mt-10 mb-10">
+            <div className="relative container max-w-medium z-[1] xl:-mt-22 mb-10">
                 <img ref={oitoRef} src="/site/img/8poroito.svg" className="w-full" />
             </div>
         </section>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { EightEffect } from '../EightEffect';
+// import { EightEffect } from '../EightEffect';
 import { CareerServices } from '../CareerServices';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -131,12 +131,12 @@ export function CareerHeroSection({ conteudos }) {
                 </div>
             </div>
 
-            <div className="absolute top-[-130px] left-[-300px] md:left-[-600px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
+            {/* <div className="absolute top-[-130px] left-[-300px] md:left-[-600px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
             </div>
             <div className="absolute bottom-[-500px] right-[-200px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
-            </div>
+            </div> */}
         </section>
     );
 }
