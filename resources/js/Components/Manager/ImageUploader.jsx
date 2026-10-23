@@ -65,14 +65,25 @@ export const ImageUploader = ({ onUpload, crop }) => {
 
     const onDrop = useCallback(async (acceptedFiles) => {
         setError(null);
-        const processedImages = await Promise.all(
+
+        const results = await Promise.all(
             acceptedFiles.map(async (file) => {
-                const { blob, originalFile } = await resizeAndCropImage(file);
-                return crop ? { original: originalFile } : { resized: blob, original: originalFile };
+                const processed = await resizeAndCropImage(file);
+                if (!processed) return null;
+
+                const { blob, originalFile } = processed;
+
+                const resized = new File([blob], originalFile.name, { type: 'image/jpeg' });
+
+                return { resized, original: originalFile };
             })
         );
 
-        onUpload(processedImages);
+        const processedImages = results.filter(Boolean);
+
+        if (processedImages.length > 0) {
+            onUpload(processedImages);
+        }
     }, [onUpload]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
