@@ -24,14 +24,11 @@ const Page = () => {
     });
 
     const handleImageUpload = (processedImages) => {
-        const formData = new FormData();
-        
-        const imagesData = processedImages.map(({ resized, original }) => ({
+        setData('images', processedImages.map(({ resized, original }) => ({
             img: resized,
             img_original: original
-        }));
+        })));
 
-        setData('images', imagesData);
         setIsReadyToUpload(true);
     };
 
