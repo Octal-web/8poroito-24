@@ -18,7 +18,7 @@ export const InputCheckbox = ({ title, name, checked, onChange }) => {
                         id={name}
                         name={name}
                         className="h-4 w-4 text-primary focus:ring-0"
-                        checked={!!checked}
+                        checked={!!Number(checked)}
                         onChange={handleCheckboxChange}
                     />
                     <label htmlFor={name} className="ml-2 block text-sm sm:text-base text-primary">Sim</label>

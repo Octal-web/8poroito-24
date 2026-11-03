@@ -179,18 +179,18 @@ class CaseClienteService
         return !count($erros);
     }
 
-    private function generateSlug($titulo, $ignoreId = null) {
+    private function generateSlug($titulo, $ignorarId = null) {
         $base = Str::slug($titulo);
         $slug = $base;
-        $i = 2;
+        $contador = 2;
 
-        while (CaseCliente::query()
-            ->where('slug', $slug)
-            ->when($ignoreId, function ($query) use ($ignoreId) {
-                $query->where('id', '!=', $ignoreId);
-            })
-            ->exists()) {
-            $slug = $base . '-' . $i++;
+        while (
+            CaseCliente::query()
+                ->where('slug', $slug)
+                ->when($ignorarId, fn ($query) => $query->where('id', '!=', $ignorarId))
+                ->exists()
+        ) {
+            $slug = $base . '-' . $contador++;
         }
 
         return $slug;

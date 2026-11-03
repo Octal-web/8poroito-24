@@ -12,7 +12,7 @@ class PostCaseRequest extends FormRequest
     }
 
     public function rules()
-    {  
+    {
         return [
             'titulo' => 'required|max:120',
             'campanha' => 'required|string|max:255',
