@@ -48,7 +48,7 @@ class PortfoliosController extends Controller
 
 
             if ($response) {
-                $image = $request->file('img')->move(public_path('content/portfolios/'), $portfolio->imagem);
+                $image = $request->file('img')->move(public_path('content/portfolio/'), $portfolio->imagem);
 
                 return to_route('Manager.Home.index')->with('message', ['type' => 'success', 'msg' => 'Registro salvo com sucesso!']);
             }
@@ -120,18 +120,18 @@ class PortfoliosController extends Controller
             $portfolio->nome = $request->nome;
 
             if ($request->file('img') && $request->file('img')->getError() == 0) {
-                $portfolio->logo = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('img')->extension());
+                $portfolio->imagem = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('img')->extension());
             }
 
             $response = $portfolio->save();
 
             if ($response) {
                 if ($request->file('img') && $request->file('img')->getError() == 0) {
-                    if ($portfolio->logo && isset($portfolioOriginal) && File::exists('content/portfolio/' . $portfolioOriginal->logo)) {
-                        File::delete('content/portfolio/' . $portfolioOriginal->logo);
+                    if ($portfolioOriginal->imagem && File::exists(public_path('content/portfolio/' . $portfolioOriginal->imagem))) {
+                        File::delete(public_path('content/portfolio/' . $portfolioOriginal->imagem));
                     }
 
-                    $image = $request->file('img')->move(public_path('content/portfolio/'), $portfolio->logo);
+                    $image = $request->file('img')->move(public_path('content/portfolio/'), $portfolio->imagem);
                 }
 
                 return to_route('Manager.Home.index')->with('message', ['type' => 'success', 'msg' => 'Registro salvo com sucesso!']);

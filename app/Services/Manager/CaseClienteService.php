@@ -23,7 +23,7 @@ class CaseClienteService
         $caseCliente = new CaseCliente;
         $caseClienteIdioma = new CaseClienteIdioma;
 
-        $caseCliente->destaque = $request->destaque;
+        $caseCliente->destaque = $request->boolean('destaque');
         $caseCliente->ano = $request->ano;
         $caseCliente->slug = $this->generateSlug($request->titulo);
         $caseCliente->imagem = md5(uniqid((string) rand(), true)) . '.webp';
@@ -96,7 +96,7 @@ class CaseClienteService
         $caseCliente->destaque = $request->boolean('destaque');
         $caseCliente->ano = $request->ano;
 
-        if ($idioma->padrao && $request->titulo !== $caseClienteIdioma->titulo) {
+        if ($idioma->padrao && $caseClienteIdioma->titulo !== $request->titulo) {
             $caseCliente->slug = $this->generateSlug($request->titulo, $caseCliente->id);
         }
 

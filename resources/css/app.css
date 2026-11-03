@@ -155,6 +155,14 @@ form .react-select__value-container {
 	100% { transform: scale(1); }
 }
 
+.animate-marquee {
+	animation: marquee 60s linear infinite;
+}
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
 @media (max-width: 768px) {
     .project-item::after {
     	@apply bg-black w-full opacity-25;

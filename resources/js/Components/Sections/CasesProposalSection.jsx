@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useMouseGradient } from '../../Contexts/MouseGradientContext';
 import { ProposalModal } from '../ProposalModal';
 
 export function CasesProposalSection() {
-    const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+    const gradientPosition = useMouseGradient();
 
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -14,14 +15,8 @@ export function CasesProposalSection() {
         setModalOpen(false);
     };
 
-    const handleMouseMoveBtn = (e) => {
-        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setGradientPosition({ x, y });
-    };
     return (
-        <section className="relative my-30" onMouseMove={handleMouseMoveBtn}>
+        <section className="relative my-30">
             <div className="container max-w-small">
                 <h3 className="text-xl text-center mb-3">Vamos transformar sua marca em emoção?</h3>
                 <button

@@ -24,14 +24,11 @@ const Page = () => {
     });
 
     const handleImageUpload = (processedImages) => {
-        const formData = new FormData();
-        
-        const imagesData = processedImages.map(({ resized, original }) => ({
+        setData('images', processedImages.map(({ resized, original }) => ({
             img: resized,
             img_original: original
-        }));
+        })));
 
-        setData('images', imagesData);
         setIsReadyToUpload(true);
     };
 
@@ -90,7 +87,7 @@ const Page = () => {
                             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                         >
                             {state.map((image, index) => (
-                                <IndividualImage key={index} imagensPath="/content/images/" individualContent={image} controller="Imagens" />
+                                <IndividualImage key={index} imagensPath="" individualContent={image} controller="Imagens" />
                             ))}
                         </ReactSortable>
                     </div>

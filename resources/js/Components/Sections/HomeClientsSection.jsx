@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useMouseGradient } from '../../Contexts/MouseGradientContext';
 import { Link } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { HomeBrand } from '../HomeBrand';
-import { EightEffect } from '../EightEffect';
+// import { EightEffect } from '../EightEffect';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function HomeClientsSection({ clientes }) {
-    const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+    const gradientPosition = useMouseGradient();
 
     useEffect(() => {
         const context = gsap.context(() => {
@@ -30,23 +31,17 @@ export function HomeClientsSection({ clientes }) {
         return () => context.revert();
     }, []);
 
-    const handleMouseMoveBtn = (e) => {
-        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setGradientPosition({ x, y });
-    };
     return (
-        <section className="relative bg-black pt-10 pb-30 overflow-hidden" onMouseMove={handleMouseMoveBtn}>
+        <section className="relative bg-black pt-10 pb-30 overflow-hidden">
             <Link href={route('Cases.index')} className="block w-fit mx-auto text-custom-gray underline uppercase mx-auto mb-40 transition-all hover:scale-110">Ver todos os projetos</Link>
 
-            <div className="absolute top-[-400px] left-[-500px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
+            {/* <div className="absolute top-[-400px] left-[-500px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
             </div>
 
             <div className="absolute bottom-[-300px] right-[-200px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
-            </div>
+            </div> */}
 
             <div className="container max-w-large">
                 <h4 className="relative text-2xl sm:text-3xl text-center text-white mb-15 max-w-60 md:max-w-80 lg:max-w-full mx-auto">
