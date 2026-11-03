@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $endDate = $request->end_date ? Carbon::parse($request->end_date) : Carbon::now();
 
         $analyticsData['age'] = Analytics::fetchVisitorsByAge(Period::create($startDate, $endDate));
-        $analyticsData['cities'] = Analytics::fetchTopCities(Period::create($startDate, $endDate));
+        $analyticsData['cities'] = Analytics::fetchTopCitiesWithUsers(Period::create($startDate, $endDate));
         $analyticsData['gender'] = Analytics::fetchAccessByGender(Period::create($startDate, $endDate));
 
         return $analyticsData;
