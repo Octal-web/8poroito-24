@@ -57,7 +57,7 @@ export function HomePortfolioSection({ conteudos, portfolios }) {
     }, []);
 
     return (
-        <section className="relative my-10 overflow-hidden" id="portfolio">
+        <section className="relative mt-10 overflow-hidden" id="portfolio">
             <div className="relative container max-w-[90%]">
                 <div className="absolute top-0 left-0 w-full h-full">
                     <div className="grid-cols-2 grid gap-x-4 gap-y-20 lg:gap-y-4">
