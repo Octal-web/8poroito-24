@@ -8,21 +8,31 @@ export const CareerServices = ({ title = '', description = '', index, ...props }
     const galleryRef = useRef(null);
 
     useEffect(() => {
-        gsap.from(galleryRef.current,
-        {
-            opacity: 0,
-            x: -50,
-            duration: 0.5,
-            delay: index * 0.3,
-            stagger: 0.1,
-            scrollTrigger: {
-                trigger: galleryRef.current,
-                start: 'top 90%',
-                end: 'top 50%',
-                toggleActions: 'play none resume reverse'
-            },
-        });
-    }, []);
+        const mm = gsap.matchMedia();
+
+        const animate = (delay) => {
+            gsap.from(galleryRef.current, {
+                opacity: 0,
+                x: -50,
+                duration: 0.5,
+                delay,
+                scrollTrigger: {
+                    trigger: galleryRef.current,
+                    start: 'top 90%',
+                    end: 'top 50%',
+                    toggleActions: 'play none resume reverse'
+                },
+            });
+        };
+
+        // Desktop: cards lado a lado entram um após o outro.
+        mm.add('(min-width: 768px)', () => animate(index * 0.6));
+
+        // Mobile: cards empilhados já entram em sequência pelo scroll.
+        mm.add('(max-width: 767px)', () => animate(0));
+
+        return () => mm.revert();
+    }, [index]);
 
     return (
         <div ref={galleryRef} className="bg-primary border border-custom-gray text-white flex flex-row items-center w-full p-4 xl:py-8 xl:px-6 2xl:p-10 md:m-4 min-h-[200px]">

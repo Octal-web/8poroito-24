@@ -7,12 +7,12 @@ import { AboutClientsSection } from '../../Components/Sections/AboutClientsSecti
 import { AboutGallerySection } from '../../Components/Sections/AboutGallerySection';
 
 const Page = () => {
-    const { clientes, imagensGaleria } = usePage().props;
+    const { conteudos, clientes, imagensGaleria } = usePage().props;
 
     return (
         <DefaultLayout>
-            <AboutHeroSection />
-            <AboutTeamSection />
+            <AboutHeroSection title={conteudos[0]?.titulo} />
+            <AboutTeamSection text={conteudos[0]?.texto} />
             <AboutClientsSection clientes={clientes} />
             <AboutGallerySection imagensGaleria={imagensGaleria} />
         </DefaultLayout>

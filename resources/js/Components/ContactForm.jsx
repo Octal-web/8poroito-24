@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import { InputMask } from '@react-input/mask';
 
 export const ContactForm = ({ gradientPosition, ...props }) => {
-    const [aware, setAware] = useState(false);
-
     const { data, setData, post, processing, errors, clearErrors } = useForm({
         nome: '',
         email: '',
@@ -31,12 +29,6 @@ export const ContactForm = ({ gradientPosition, ...props }) => {
         post(route('Contato.enviar'), {
             preserveScroll: true,
         });
-    };
-
-    const handleAware = (e) => {
-        setAware(!aware);
-
-        handleChange(e);
     };
 
     return (
@@ -92,7 +84,7 @@ export const ContactForm = ({ gradientPosition, ...props }) => {
             <div className="mb-5 flex gap-12 flex-col lg:flex-row">
                 <div className="w-full">
                     <div className="flex items-center mb-5 xl:mb-3 2xl:mb-4">
-                        <input type="checkbox" id="politica" name="politica" className="h-5 w-5 text-primary focus:ring-0" checked={data.politica} onChange={handleAware} />
+                        <input type="checkbox" id="politica" name="politica" className="h-5 w-5 text-primary focus:ring-0" checked={data.politica} onChange={handleChange} />
                         <label htmlFor="politica" className="ml-2 block text-sm sm:text-base text-primary">Estou de acordo com a <Link className="underline">Política de Privacidade</Link>.</label>
                     </div>
                     {errors.politica && <p className="text-red-500 -mt-3 mb-3">{errors.politica}</p>}
@@ -106,8 +98,8 @@ export const ContactForm = ({ gradientPosition, ...props }) => {
             <div className="mt-10 flex gap-6 flex-col lg:flex-row">
                 <button
                     type="submit"
-                    className={`relative overflow-hidden block w-64 border border-white text-center text-white h-16 leading-[4rem] font-light uppercase transition-all mx-auto md:mx-0 ${!aware && 'opacity-50 cursor-not-allowed'}`}
-                    disabled={!aware && true}
+                    className={`relative overflow-hidden block w-64 border border-white text-center text-white h-16 leading-[4rem] font-light uppercase transition-all mx-auto md:mx-0 ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={processing}
                     style={{
                         background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(50, 50, 50, 0.3), #000)`,
                     }}>

@@ -107,15 +107,15 @@ const DefaultLayout = ({ children }) => {
                 <div className="container">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full my-8 xl:my-10 2xl:my-15">
-                            <h1 className="flex items-center">
+                            <div className="flex items-center">
                                 <Link href={route('Home.index')} className="flex items-center">
                                     <img src={`/site/img/logo.png`} alt="Logo" className="block w-30 md:w-40" />
                                 </Link>
-                            </h1>
+                            </div>
 
                             <div className={`${isMenuOpen ? 'transform' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[3] bg-black w-full h-full transition-all duration-500`}></div>
-                            <div className={`${isMenuOpen ? 'transform delay-300' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[4] bg-black w-full h-full transition-all duration-500`}>
-                                <div className="container flex flex-col justify-evenly items-center min-h-full">
+                            <div className={`${isMenuOpen ? 'transform delay-300' : 'transform translate-y-full'} fixed items-center fixed top-0 left-0 z-[4] bg-black w-full h-full overflow-y-auto transition-all duration-500`}>
+                                <div className="container flex flex-col justify-evenly items-center gap-10 md:gap-0 py-10 md:py-0 min-h-full">
                                     <button className="w-fit mx-auto text-xs" onClick={toggleMenu}>
                                         <div className="relative inline-block w-4 h-4 -mb-1">
                                             <span className="block absolute top-1/2 left-1/2 w-4 h-0.5 bg-white transform -translate-x-1/2 -translate-y-1/2 rotate-45"></span>
@@ -126,26 +126,26 @@ const DefaultLayout = ({ children }) => {
                                     <nav className="">
                                         <ul className="flex flex-col items-center justify-center">
                                             <li className="relative">
-                                                <Link href={route('Home.index')} className="relative text-5xl text-white font-light transition-all hover:font-bold">Home</Link>
+                                                <Link href={route('Home.index')} className="relative text-4xl md:text-5xl text-white font-light transition-all hover:font-bold">Home</Link>
                                             </li>
-                                            <li className="relative mt-5 2xl:mt-8">
-                                                <Link href={route('Institucional.index')} className="relative text-5xl text-white font-light transition-all hover:font-bold">Sobre</Link>
+                                            <li className="relative mt-4 md:mt-5 2xl:mt-8">
+                                                <Link href={route('Institucional.index')} className="relative text-4xl md:text-5xl text-white font-light transition-all hover:font-bold">Sobre</Link>
                                             </li>
-                                            <li className="relative mt-5 2xl:mt-8">
-                                                <Link href={route('Cases.index')} className="relative text-5xl text-white font-light transition-all hover:font-bold">Cases</Link>
+                                            <li className="relative mt-4 md:mt-5 2xl:mt-8">
+                                                <Link href={route('Cases.index')} className="relative text-4xl md:text-5xl text-white font-light transition-all hover:font-bold">Cases</Link>
                                             </li>
-                                            <li className="relative mt-5 2xl:mt-8">
-                                                <Link href={route('Carreiras.index')} className="relative text-5xl text-white font-light transition-all hover:font-bold">Carreiras</Link>
+                                            <li className="relative mt-4 md:mt-5 2xl:mt-8">
+                                                <Link href={route('Carreiras.index')} className="relative text-4xl md:text-5xl text-white font-light transition-all hover:font-bold">Carreiras</Link>
                                             </li>
-                                            <li className="relative mt-5 2xl:mt-8">
-                                                <Link href={route('Contato.index')} className="relative text-5xl text-white font-light transition-all hover:font-bold">Contato</Link>
+                                            <li className="relative mt-4 md:mt-5 2xl:mt-8">
+                                                <Link href={route('Contato.index')} className="relative text-4xl md:text-5xl text-white font-light transition-all hover:font-bold">Contato</Link>
                                             </li>
                                         </ul>
                                     </nav>
-                                    <div className="flex justify-between items-center text-white w-full">
-                                        <div>
+                                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0 text-white w-full">
+                                        <div className="w-full max-w-[15rem] md:w-auto md:max-w-none">
                                             <button
-                                                className="button relative overflow-hidden block w-64 border border-white text-center h-16 leading-[4rem] font-light uppercase"
+                                                className="button relative overflow-hidden block w-full md:w-64 border border-white text-center h-14 leading-[3.5rem] md:h-16 md:leading-[4rem] md:text-base font-light uppercase"
                                                 style={{
                                                     background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)`,
                                                 }}
@@ -156,23 +156,23 @@ const DefaultLayout = ({ children }) => {
                                             <ProposalModal isOpen={isModalOpen} onClose={handleCloseModal} />
                                         </div>
                                         <div>
-                                            <h5 className="text-xs text-center opacity-35 mb-3">Nossas redes:</h5>
-                                            <ul className="flex gap-5">
-                                                <li><a href="https://www.instagram.com/8poroito/" target="_blank"><img src={`/site/img/instagram.png`} alt="instagram" /></a></li>
-                                                <li><a href="https://www.facebook.com/8poroito/" target="_blank"><img src={`/site/img/facebook.png`} alt="facebook" /></a></li>
-                                                <li><a href="https://www.behance.net/agencia8poroito" target="_blank"><img src={`/site/img/behance.png`} alt="behance" /></a></li>
-                                                <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank"><img src={`/site/img/linkedin.png`} alt="linkedin" /></a></li>
+                                            <p className="text-xs text-center opacity-60 mb-3">Nossas redes:</p>
+                                            <ul className="flex gap-4 md:gap-5">
+                                                <li><a href="https://www.instagram.com/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/instagram.png`} alt="instagram" /></a></li>
+                                                <li><a href="https://www.facebook.com/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/facebook.png`} alt="facebook" /></a></li>
+                                                <li><a href="https://www.behance.net/agencia8poroito" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/behance.png`} alt="behance" /></a></li>
+                                                <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/linkedin.png`} alt="linkedin" /></a></li>
                                             </ul>
                                         </div>
-                                        <div>
+                                        <div className="w-full max-w-[15rem] md:w-auto md:max-w-none">
                                             <a
-                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536"
-                                                className="button relative overflow-hidden block w-64 border border-white text-center h-16 font-light uppercase flex gap-3 justify-center items-center"
+                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663"
+                                                className="button relative overflow-hidden block w-full md:w-64 border border-white text-center h-14 md:h-16 md:text-base font-light uppercase flex gap-3 justify-center items-center"
                                                 target="_blank"
                                                 style={{
                                                     background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)`,
                                                 }}
-                                            ><img src={`/site/img/whatsapp.png`} /> WhatsApp</a>
+                                            ><img src={`/site/img/whatsapp.png`} alt="" className="h-7 w-7 md:h-auto md:w-auto object-contain" /> WhatsApp</a>
                                         </div>
                                     </div>
                                 </div>
@@ -209,7 +209,7 @@ const DefaultLayout = ({ children }) => {
                                 <li><Link href={route('Cases.index')} className="uppercase transition-opacity hover:opacity-70">Cases</Link></li>
                                 <li><Link href={route('Contato.index')} className="uppercase transition-opacity hover:opacity-70">Contato</Link></li>
                             </ul>
-                            <Link href={route('Politicas.privacidade')} className="mt-6 inline-block text-white/50 transition-colors hover:text-white">Política de Privacidade</Link>
+                            <Link href={route('Politicas.privacidade')} className="mt-6 inline-block text-white/60 transition-colors hover:text-white">Política de Privacidade</Link>
                         </nav>
 
                         <div className="py-8 md:px-8 md:py-0 lg:px-12">
@@ -227,11 +227,11 @@ const DefaultLayout = ({ children }) => {
                                     R. João Goulart, 696 - sala 04<br/>
                                     São José, Garibaldi - RS, 95720-000
                                 </a>
-                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99705-5536</a>
+                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99365-5663</a>
                                 <a href="mailto:falecom@8poroito.com.br" className="block break-words transition-opacity hover:opacity-70">falecom@8poroito.com.br</a>
                             </address>
                             <a
-                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555497055536"
+                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663"
                                 className="button relative flex min-h-[3.5rem] w-full max-w-[16rem] items-center justify-center gap-3 overflow-hidden border border-white/60 px-4 py-3 text-sm font-light uppercase hover:border-white"
                                 target="_blank" rel="noopener noreferrer"
                                 style={{ background: `radial-gradient(circle at ${whatsappGradientPosition.x}% ${whatsappGradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)` }}
@@ -240,7 +240,7 @@ const DefaultLayout = ({ children }) => {
                     </div>
 
                     <div className="mt-16 flex flex-col items-center justify-center gap-7 md:mt-28 md:flex-row md:gap-12 lg:mt-36">
-                        <div className="flex flex-col items-center gap-4 text-white/40 sm:flex-row">
+                        <div className="flex flex-col items-center gap-4 text-white/60 sm:flex-row">
                             <Link href={route('Home.index')} aria-label="8poroito — Home" className="opacity-40 transition-opacity hover:opacity-100">
                                 <img src="/site/img/logo.png" alt="8poroito" className="block w-28" />
                             </Link>
@@ -249,7 +249,7 @@ const DefaultLayout = ({ children }) => {
                         <ul aria-label="Redes sociais" className="flex items-center gap-5">
                             <li><a href="https://www.instagram.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/instagram.png" alt="Instagram" /></a></li>
                             <li><a href="https://www.facebook.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/facebook.png" alt="Facebook" /></a></li>
-                            <li><a href="https://www.behance.net/agencia8poroito" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/behance.png" alt="Behance" /></a></li>
+                            {/* <li><a href="https://www.behance.net/agencia8poroito" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/behance.png" alt="Behance" /></a></li> */}
                             <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/linkedin.png" alt="LinkedIn" /></a></li>
                         </ul>
                     </div>

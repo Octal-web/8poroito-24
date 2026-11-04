@@ -45,8 +45,8 @@ export function HomeVideoSection() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="relative pt-20 md:pt-0 pb-50">
-            <div className="absolute bottom-0 left-0 w-full h-[50%] md:h-[40%] 2xl:h-[30%] bg-black"></div>
+        <section ref={sectionRef} className="relative pt-14 md:pt-0 pb-12 md:pb-50">
+            <div className="absolute bottom-0 left-0 w-full h-20 md:h-[40%] 2xl:h-[30%] bg-black"></div>
 
             <div className={`relative container ${playing ? 'videoPlay' : 'videoPause'}`}>
                 <VideoPlayer
@@ -56,7 +56,7 @@ export function HomeVideoSection() {
                     autoplay={false}
                 />
 
-                <button className="playBtn absolute inset-0 m-auto xl:w-40 h-30 w-30 xl:h-40 2xl:w-fit 2xl:h-fit transition-all z-[1]" onClick={() => setPlaying(!playing)}><img src={`/site/img/${playing ? 'pauseBtn' : 'playBtn'}.png`} className="block" /></button>
+                <button className="playBtn absolute inset-0 m-auto xl:w-40 h-30 w-30 xl:h-40 2xl:w-fit 2xl:h-fit transition-all z-[1]" onClick={() => setPlaying(!playing)} aria-label={playing ? 'Pausar vídeo' : 'Reproduzir vídeo'}><img src={`/site/img/${playing ? 'pauseBtn' : 'playBtn'}.png`} alt="" className="block" /></button>
             </div>
         </section>
     );

@@ -81,6 +81,23 @@ class CasesController extends Controller
             return Inertia::location(route('Cases.index'));
         }
 
+        // Case anterior/próximo na mesma ordem da listagem, voltando ao início/fim nas pontas.
+        $slugs = CaseCliente::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true,
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->pluck('slug')
+            ->values();
+
+        $posicao = $slugs->search($caseCliente->slug);
+        $total = $slugs->count();
+
+        $caseClienteAnterior = $total > 1 ? $slugs[($posicao - 1 + $total) % $total] : null;
+        $caseClientePosterior = $total > 1 ? $slugs[($posicao + 1) % $total] : null;
+
         $outrosCases = CaseCliente::query()
             ->where([
                 'excluido' => NULL,
@@ -145,6 +162,8 @@ class CasesController extends Controller
         return Inertia::render('Cases/caseCliente', [
             'pagina' => $pagina,
             'caseCliente' => $caseCliente,
+            'caseClienteAnterior' => $caseClienteAnterior,
+            'caseClientePosterior' => $caseClientePosterior,
             'outrosCases' => $outrosCases
         ]);
     }

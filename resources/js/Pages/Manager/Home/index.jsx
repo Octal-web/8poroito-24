@@ -48,10 +48,7 @@ const Page = () => {
 
             <BlockContent content={contentClientes} />
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <FormContent content={conteudos[1]} full={false} idioma={idioma.codigo} />
-                <FormContent content={conteudos[0]} full={false} idioma={idioma.codigo} />
-            </div>
+            <FormContent content={conteudos[1]} full={true} idioma={idioma.codigo} />
 
             <BlockContent content={contentPortfolios} />
         </AdminLayout>

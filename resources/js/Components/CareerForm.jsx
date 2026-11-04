@@ -21,8 +21,6 @@ const jobOptions = [
 
 export const CareerForm = () => {
     const [fileName, setFileName] = useState('');
-    const [aware, setAware] = useState(false);
-    const [truth, setTruth] = useState(false);
     
     const { data, setData, post, processing, errors, clearErrors } = useForm({
         nome: '',
@@ -101,18 +99,6 @@ export const CareerForm = () => {
         });
     };
 
-    const handleAware = (e) => {
-        setAware(!aware);
-
-        handleChange(e);
-    };
-
-    const handleTruth = (e) => {
-        setTruth(!truth);
-
-        handleChange(e);
-    };
-
     return (
         <form method="POST" className="w-full" onSubmit={handleSubmit}>
             <div className="mb-5 2xl:mb-10 flex gap-5 lg:gap-15 flex-col lg:flex-row">
@@ -140,7 +126,7 @@ export const CareerForm = () => {
                     <label htmlFor="portfolio" className="block 2xl:text-lg font-semibold uppercase mb-2 2xl:mb-3">Currículo/Portfolio:</label>
                     <div className="flex justify-center flex-wrap md:flex-nowrap gap-4 items-center">
                         <label htmlFor="arq" className="relative flex gap-4 items-center justify-center w-full max-w-44 h-12 xl:h-14 2xl:h-15 px-2 py-2 bg-zinc-500 text-white transition-all hover:bg-zinc-700">
-                            <img src={`/site/img/resume.png`} />
+                            <img src={`/site/img/resume.png`} alt="" />
                             <span>{fileName || 'Anexar'}</span>
                             <input
                                 type="file"
@@ -193,6 +179,7 @@ export const CareerForm = () => {
                                 <button
                                     type="button"
                                     onClick={() => removeSocialField(index)}
+                                    aria-label="Remover rede social"
                                     className="block w-5 h-5 ml-auto border border-primary leading-none pb-1 transition-all hover:bg-primary hover:text-white top-5 right-2 mt-2"
                                 >
                                 -
@@ -200,6 +187,7 @@ export const CareerForm = () => {
                             ) : (
                                 <button
                                     type="button"
+                                    aria-label="Remover rede social"
                                     className="block w-5 h-5 ml-auto border border-primary leading-none pb-1 transition-all opacity-30 top-5 right-2 mt-2"
                                     disabled
                                 >
@@ -231,15 +219,15 @@ export const CareerForm = () => {
 
             <div className="mb-10 flex gap-5 lg:gap-15 flex-col lg:flex-row">
                 <div className="w-full">
-                    <label htmlFor="apresentacao" className="block 2xl:text-lg font-semibold uppercase mb-2">Se Apresente Para a Gente!</label>
-                    <small className="block max-w-96 text-gray-500 mb-3">O que é importante sabermos sobre você? Não seja tímido/a, vamos adorar conhecer mais sobre você! Seus hobbies, músicas, experiências, habilidades.</small>
+                    <label htmlFor="apresentacao" className="block 2xl:text-lg font-semibold uppercase mb-2">Conte um pouco sobre você!</label>
+                    <small className="block max-w-96 text-gray-500 mb-3">Suas experiências, habilidades, interesses, hobbies... Queremos conhecer quem está por trás do currículo <br />ou portfólio!</small>
                     <textarea id="apresentacao" name="apresentacao" value={data.apresentacao} onChange={handleChange} placeholder="Escreva aqui..." className="w-full h-40 px-8 py-4 border border-primary focus:ring-primary focus:border-primary placeholder-gray-300"></textarea>
                     {errors.apresentacao && <p className="text-red-500">{errors.apresentacao}</p>}
                 </div>
 
                 <div className="w-full">
-                    <label htmlFor="projetos" className="block 2xl:text-lg font-semibold uppercase mb-2">Já Participou de Algum Projeto Massa?</label>
-                    <small className="block max-w-96 text-gray-500 mb-3">Conte pra gente com mais detalhes que projeto foi esse, que habilidades você desenvolveu e/ou aprimorou com ele? Como foi o processo de desenvolvimento? Somos curiosos!</small>
+                    <label htmlFor="projetos" className="block 2xl:text-lg font-semibold uppercase mb-2">Tem algum projeto que merece ser compartilhado?</label>
+                    <small className="block max-w-96 text-gray-500 mb-3">Conta pra gente qual foi, como você participou e o que essa experiência trouxe de aprendizado. Somos curiosos e adoramos conhecer boas histórias!</small>
                     <textarea id="projetos" name="projetos" value={data.projetos} onChange={handleChange} placeholder="Escreva aqui..." className="w-full h-40 px-8 py-4 border border-primary focus:ring-primary focus:border-primary placeholder-gray-300"></textarea>
                     {errors.projetos && <p className="text-red-500">{errors.projetos}</p>}
                 </div>
@@ -261,13 +249,13 @@ export const CareerForm = () => {
 
                 <div className="w-full">
                     <div className="flex items-center mt-2 mb-5 md:mt-0 xl:mb-3 2xl:mb-4">
-                        <input type="checkbox" id="politica" name="politica" className="h-5 w-5 text-primary focus:ring-0" checked={data.politica} onChange={handleAware} />
+                        <input type="checkbox" id="politica" name="politica" className="h-5 w-5 text-primary focus:ring-0" checked={data.politica} onChange={handleChange} />
                         <label htmlFor="politica" className="ml-2 block text-sm sm:text-base text-primary">Estou de acordo com a <Link className="underline">Política de Privacidade</Link></label>
                     </div>
                     {errors.politica && <p className="text-red-500 -mt-4 mb-2">{errors.politica}</p>}
 
                     <div className="flex items-center">
-                        <input type="checkbox" id="veracidade" name="veracidade" className="h-5 w-5 text-primary focus:ring-0" checked={data.veracidade} onChange={handleTruth} />
+                        <input type="checkbox" id="veracidade" name="veracidade" className="h-5 w-5 text-primary focus:ring-0" checked={data.veracidade} onChange={handleChange} />
                         <label htmlFor="veracidade" className="ml-2 block text-sm sm:text-base text-primary">Sou responsável pela veracidade das informações aqui prestadas</label>
                     </div>
                     {errors.veracidade && <p className="text-red-500 mb-2">{errors.veracidade}</p>}
@@ -277,8 +265,8 @@ export const CareerForm = () => {
             <div className="mt-20 flex gap-6 flex-col lg:flex-row">
                 <button
                     type="submit"
-                    className={`block w-64 border border-primary border-2 text-center h-16 leading-[4rem] font-light uppercase mx-auto transition-all ${(!aware || !truth) && 'opacity-50 cursor-not-allowed'}`}
-                    disabled={(!aware || !truth) ? true : false }
+                    className={`block w-64 border border-primary border-2 text-center h-16 leading-[4rem] font-light uppercase mx-auto transition-all ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={processing}
                     >
                     Enviar
                 </button>

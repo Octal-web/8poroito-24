@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 class ContatoController extends Controller
 {
     public function index() {
-        return Inertia::render('Contato/index');
+        return Inertia::render('Contato/index', [
+            'googleMapsApiKey' => config('services.google_maps.key'),
+        ]);
     }
 
     /**
@@ -73,14 +75,17 @@ class ContatoController extends Controller
             ])
             ->first();
 
+        // Token inválido ou já usado (ex.: usuário atualizou a página): a página de obrigado não é de acesso livre.
         if (!$contato) {
-            return Inertia::location(route('Contato.index'));
+            return redirect()->route('Home.index');
         }
 
         $contato->token = null;
 
         $response = $contato->save();
 
-        return Inertia::render('Contato/concluido');
+        return Inertia::render('Contato/concluido', [
+            'proposta' => (bool) $contato->proposta,
+        ]);
     }
 };
