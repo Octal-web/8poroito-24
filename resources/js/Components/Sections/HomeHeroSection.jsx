@@ -68,7 +68,7 @@ export function HomeHeroSection() {
             <div className="relative max-h-[100vh] pt-[7%] 2xl:pt-[12%] pb-10 h-screen">
                 <div className="container">
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-white mt-40 mb-20 md:my-0">
-                        <h4 className="text-2xl mt-0 md:mt-5 lg:text-3xl xl:text-4xl font-light">Você conhece o</h4>
+                        <p className="text-2xl mt-0 md:mt-5 lg:text-3xl xl:text-4xl font-light">Você conhece o</p>
                         <h1 className="text-[120px] leading-[0.7] md:leading-[inherit] md:text-[140px] lg:text-[170px] xl:text-[220px] 2xl:text-[250px] 2xl:mb-8 tracking-tighter">
                             {letters.map((letter, index) => (
                                 <span
@@ -82,11 +82,11 @@ export function HomeHeroSection() {
                                 </span>
                             ))}
                         </h1>
-                        <h4 className="text-2xl mt-5 md:mt-5 lg:text-3xl xl:text-4xl font-light">da sua marca?</h4>
+                        <p className="text-2xl mt-5 md:mt-5 lg:text-3xl xl:text-4xl font-light">da sua marca?</p>
                     </div>
 
                     <div className="max-w-md mx-auto xl:mt-2 2xl:mt-[5%]">
-                        <h3 className="text-center text-white">Todos os dias novas marcas nascem, com propostas inovadoras e gente jovem cheia de energia</h3>
+                        <p className="text-center text-white">Descubra como o nosso jeito de fazer branding vem gerando valor e impacto.</p>
                         <button className="absolute w-fit left-1/2 transform -translate-x-1/2 bottom-10 md:bottom-12 2xl:bottom-20" onClick={handleScroll}>
                             <img src="/site/img/arrowDown.png" className="opacity-25 transition-opacity hover:opacity-75" alt="Ver mais" />
                         </button>

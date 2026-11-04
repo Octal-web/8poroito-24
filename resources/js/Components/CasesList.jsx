@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export const CasesList = ({ url = '', src = '', index, ...props }) => {
+export const CasesList = ({ url = '', src = '', title = '', index, ...props }) => {
     const galleryRef = useRef(null);
 
     useEffect(() => {
@@ -28,6 +28,10 @@ export const CasesList = ({ url = '', src = '', index, ...props }) => {
             <Link ref={galleryRef} href={route('Cases.caseCliente', {slug: url})} className="custom-item w-full h-40 sm:h-70 lg:h-80 overflow-hidden">
                 <img
                     src={src}
+                    alt={title ? `Case ${title}` : 'Case'}
+                    // As primeiras linhas aparecem logo de cara; o resto carrega sob demanda.
+                    loading={index > 5 ? 'lazy' : 'eager'}
+                    decoding="async"
                     className="w-full h-full object-cover grayscale transition-all transform hover:grayscale-0 hover:scale-110"
                 />
             </Link>

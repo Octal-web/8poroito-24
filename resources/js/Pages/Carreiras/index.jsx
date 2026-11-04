@@ -10,7 +10,7 @@ const Page = () => {
     return (
         <DefaultLayout>
             <CareerHeroSection conteudos={conteudos} />
-            <CareerContactSection />
+            <CareerContactSection content={conteudos[5]} />
         </DefaultLayout>
     );
 };

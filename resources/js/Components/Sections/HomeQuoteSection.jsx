@@ -71,11 +71,11 @@ export function HomeQuoteSection({ conteudos }) {
     return (
         <section id="mais" className="relative pt-15 md:pt-20 md:pb-40">
             <div className="container max-w-medium">
-                <h3 ref={commaRef} className="font-secondary text-9xl text-center -mb-6 md:mb-0 lg:mb-4">“</h3>
+                <div ref={commaRef} aria-hidden="true" className="font-secondary text-9xl text-center -mb-10 sm:-mb-6 md:mb-0">“</div>
                 <div ref={quoteRef} className="text-center text-2xl lg:text-3xl leading-[1.4em]" dangerouslySetInnerHTML={{ __html: conteudos[0].texto }}>
                 </div>
                 <div className="overflow-hidden">
-                    <h5 ref={writerRef} className="text-center mt-15">- {conteudos[0].titulo}</h5>
+                    <p ref={writerRef} className="text-center mt-4 md:mt-8">- {conteudos[0].titulo}</p>
                 </div>
             </div>
         </section>

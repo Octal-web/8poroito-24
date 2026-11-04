@@ -7,7 +7,7 @@ export function CasesGridSection({ casesClientes }) {
             <div className="container">
                 <div className="custom-grid grid grid-cols-16 gap-2 sm:gap-3">
                     {casesClientes.map((caseCliente, index) => (
-                        <CasesList key={index} src={caseCliente.imagem} url={caseCliente.slug} index={index} />
+                        <CasesList key={index} src={caseCliente.imagem} url={caseCliente.slug} title={caseCliente.titulo} index={index} />
                     ))}
                 </div>
             </div>

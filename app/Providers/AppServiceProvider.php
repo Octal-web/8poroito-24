@@ -5,6 +5,7 @@ namespace App\Providers;
 use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Analytics\Analytics;
 use Spatie\Analytics\AnalyticsClient;
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // MySQL 5.6 (produção) limita índices a 767 bytes; com utf8mb4, varchar(255) estoura.
+        Schema::defaultStringLength(191);
+
         // Força transporte REST: com a extensão grpc instalada (produção), o protobuf em PHP puro
         // falha ao decodificar a resposta ("Error occurred during parsing: Fail to push limit").
         $this->app->bind(AnalyticsClient::class, function () {

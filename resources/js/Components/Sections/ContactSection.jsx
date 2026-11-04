@@ -7,7 +7,7 @@ import { ContactForm } from '../ContactForm';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function ContactSection() {
+export function ContactSection({ googleMapsApiKey }) {
     const gradientPosition = useMouseGradient();
 
     const leftRef = useRef(null);
@@ -39,28 +39,10 @@ export function ContactSection() {
             <div className="relative container">
                 <div className="flex flex-col md:flex-row gap-5">
                     <div className="w-full mb-20 md:mb-0" ref={leftRef}>
-                        <h3 className="font-secondary text-7xl tracking-tight 2xl:text-9xl 2xl:leading-[0.85] mb-10">Somos <br/>Onipresentes</h3>
-                        <h5 className="font-bold max-w-80 leading-none mb-4">Mas você pode nos encontrar fisicamente em:</h5>
-                        <div className="text-sm mb-8">
-                            <p>
-                                <a href="https://www.google.com/maps/place/R.+Jo%C3%A3o+Goulart,+696+-+sala+04,+95720-000+Garibaldi+-+RS" target="_blank" rel="noopener noreferrer" className="transition-all hover:opacity-80">
-                                    R. João Goulart, 696 - sala 04<br/>
-                                    São José, Garibaldi - RS, 95720-000
-                                </a>
-                            </p>
-                            <p>
-                                <a href="https://wa.me/5554997055536" target="_blank" rel="noopener noreferrer" className="transition-all hover:opacity-80">
-                                    (54) 99705-5536
-                                </a>
-                            </p>
-                            <p>
-                                <a href="mailto:falecom@8poroito.com.br" className="transition-all hover:opacity-80">
-                                    falecom@8poroito.com.br
-                                </a>
-                            </p>
-                        </div>
+                        <h3 className="font-secondary text-7xl tracking-tight 2xl:text-8xl 2xl:leading-[0.85] mb-10">Vamos conversar<br />sobre o poder<br />da sua marca?</h3>
+                        <h5 className="max-w-sm text-balance mb-10">Envie uma mensagem e vamos conversar sobre o potencial da sua marca e como o time de especialistas da 8poroito pode ajudar você a gerar valor e impacto.</h5>
                         <div className="xl:w-5/6 2xl:w-4/6 border border-gray-300">
-                            <Map />
+                            <Map apiKey={googleMapsApiKey} />
                         </div>
                     </div>
                     <div className="w-full md:pl-5" ref={rightRef}>

@@ -161,10 +161,10 @@ abstract class Controller
                     ];
                 });
 
-            $pagina = Pagina::query()
+            $buscarPagina = fn ($controladora, $acao) => Pagina::query()
                 ->where([
-                    'controladora' => $controller,
-                    'acao' => $action
+                    'controladora' => $controladora,
+                    'acao' => $acao
                 ])
                 ->with([
                     'paginasIdiomas' => function ($q) use ($idioma) {
@@ -176,6 +176,9 @@ abstract class Controller
                     },
                 ])
                 ->first();
+
+            // Rotas sem registro em "paginas" (ex.: páginas de obrigado) usam os dados da home.
+            $pagina = $buscarPagina($controller, $action) ?? $buscarPagina('Home', 'index');
 
             // $dados_gerais = DadosGerais::first();
 

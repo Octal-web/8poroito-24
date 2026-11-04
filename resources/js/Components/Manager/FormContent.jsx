@@ -48,8 +48,6 @@ export const FormContent = ({ content, full, idioma }) => {
     const handleChange = (name, content) => {
         const [key, index, field] = name.split('.');
 
-        console.log(content);
-
         setData((prevData) => {
             const updatedConteudosIdiomas = [...prevData.conteudosIdiomas];
             updatedConteudosIdiomas[index][field] = content;
@@ -80,8 +78,6 @@ export const FormContent = ({ content, full, idioma }) => {
         post(route('Manager.Conteudos.editar', {id: content.id, idioma: idioma_url}), {
             preserveScroll: true,
         });
-
-        console.log(data)
     };
 
     const toggleCollapse = () => {
@@ -158,7 +154,7 @@ export const FormContent = ({ content, full, idioma }) => {
                                 :
                                     <InputTextArea
                                         title="Texto"
-                                        name="conteudosIdiomas.0.subtitulo"
+                                        name="conteudosIdiomas.0.texto"
                                         value={data.conteudosIdiomas[0].texto}
                                         idioma={idioma}
                                         onChange={(name, value) => handleChange(name, value)}
@@ -184,13 +180,13 @@ export const FormContent = ({ content, full, idioma }) => {
 
                         { content.habilitar_img &&
                             <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputFileImage title="Imagem" imagem={`/content/display/${content.imagem}`} size={{largura: content.largura_img, altura: content.altura_img}} crop={recortar_img ? true : false} onImageCrop={handleImageCrop} />
+                                <InputFileImage title="Imagem" imagem={`/content/display/${content.imagem}`} size={{largura: content.largura_img, altura: content.altura_img}} crop={content.recortar_img} onImageCrop={handleImageCrop} />
                             </div>
                         }
 
                         { content.habilitar_img_mobile &&
                             <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputFileImage title="Imagem Mobile" imagem={`/content/display/${content.imagem_mobile}`} size={{largura: content.largura_img_mobile, altura: content.altura_img_mobile}} crop={recortar_img_mobile ? true : false} onImageCrop={handleImageCrop} />
+                                <InputFileImage title="Imagem Mobile" imagem={`/content/display/${content.imagem_mobile}`} size={{largura: content.largura_img_mobile, altura: content.altura_img_mobile}} crop={content.recortar_img_mobile} onImageCrop={handleImageCrop} />
                             </div>
                         }
 

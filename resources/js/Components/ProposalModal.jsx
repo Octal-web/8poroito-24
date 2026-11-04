@@ -21,11 +21,12 @@ export const ProposalModal = ({ isOpen, onClose }) => {
     return (
        <div className={`modal-background fixed inset-0 flex z-50 bg-white bg-opacity-30 transition-all ${isClosing ? 'opacity-0' : ''}`}>
             <div className="absolute top-0 left-0 w-full h-full" onClick={handleClose}></div>
-            <div className="modal relative bg-black px-20 py-15 shadow-lg m-auto max-w-lg w-full max-h-screen overflow-auto z-[1]" data-lenis-prevent>
-                <h2 className="text-lg mb-4">Solicite sua proposta agora mesmo!</h2>
+            <div className="modal relative bg-black px-6 sm:px-10 md:px-20 py-15 shadow-lg m-auto max-w-lg w-full max-h-screen overflow-auto z-[1]" data-lenis-prevent>
+                <h2 className="text-lg text-white mb-4">Solicite sua proposta agora mesmo!</h2>
                     <ProposalForm gradientPosition={gradientPosition} />
-                <button 
-                    onClick={handleClose} 
+                <button
+                    onClick={handleClose}
+                    aria-label="Fechar"
                     className="absolute top-6 right-6 text-zinc-300 hover:text-zinc-500 transition-all"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

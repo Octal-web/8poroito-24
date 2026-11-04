@@ -71,16 +71,21 @@ class CarreirasController extends Controller
                 $data['apresentacao'] = $request->apresentacao;
                 $data['curriculo'] = $curriculo->arquivo ? $curriculo->arquivo : null;
 
-                Mail::send('emails.curriculum', $data, function($message)use($data) {
-                    $message->from('site@8poroito.com.br')
-                            ->to('trabalheconosco@8poroito.com.br')
-                            ->to('rafael@8poroito.com.br')
-                            ->subject('Um novo currículo foi enviado através da página de recrutamento!');
+                // O currículo já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
+                try {
+                    Mail::send('emails.curriculum', $data, function($message) use ($data) {
+                        $message->from('site@8poroito.com.br')
+                                ->to('trabalheconosco@8poroito.com.br')
+                                ->to('rafael@8poroito.com.br')
+                                ->subject('Um novo currículo foi enviado através da página de recrutamento!');
 
-                    if ($request->file('arq')) {
-                        $message->attach(public_path('content/resumes/' . $data['curriculo']));
-                    }
-                });
+                        if ($data['curriculo']) {
+                            $message->attach(public_path('content/resumes/' . $data['curriculo']));
+                        }
+                    });
+                } catch (\Throwable $e) {
+                    report($e);
+                }
 
                 return Inertia::location(route('Carreiras.concluido', [
                     'token' => $token
@@ -105,8 +110,9 @@ class CarreirasController extends Controller
             ])
             ->first();
 
+        // Token inválido ou já usado (ex.: usuário atualizou a página): a página de obrigado não é de acesso livre.
         if (!$curriculo) {
-            return Inertia::location(route('Carreiras.index'));
+            return redirect()->route('Home.index');
         }
 
         $curriculo->token = null;

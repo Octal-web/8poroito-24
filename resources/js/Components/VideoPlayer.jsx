@@ -82,7 +82,8 @@ export const VideoPlayer = ({ src, classList = [], isPlaying, autoplay, onPlayin
                 playsInline
                 autoPlay={autoplay}
                 muted={autoplay}
-                preload="auto"
+                // Sem autoplay, só baixa o vídeo quando o usuário der play (videoAbout tem ~45 MB).
+                preload={autoplay ? 'auto' : 'metadata'}
                 onPlaying={onPlaying}
             >
                 <source src={src} type="video/mp4" />
