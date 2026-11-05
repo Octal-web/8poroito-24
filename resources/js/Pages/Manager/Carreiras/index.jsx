@@ -13,12 +13,20 @@ import { BlockContent } from '../../../Components/Manager/BlockContent';
 
 const Page = () => {
     // Content
-    const { pagina, conteudos, idioma, idiomas, curriculos } = usePage().props;
+    const { pagina, conteudos, idioma, idiomas, vagas, curriculos } = usePage().props;
 
     const breadcrumbItems = [
         // { label: 'Home', link: 'Home.index' },
         // { label: 'Projects', link: 'Home.index' },
     ];
+
+    const contentVagas = {
+        nome: ['Vagas', 'vaga'],
+        controller: 'Vagas',
+        imagens: false,
+        editavel: true,
+        conteudos: vagas
+    };
 
     const contentCurriculos = {
         nome: ['Currículos', 'currículo'],
@@ -45,6 +53,8 @@ const Page = () => {
             </div>
 
             <FormContent content={conteudos[5]} full={true} idioma={idioma.codigo} />
+
+            <BlockContent content={contentVagas} />
 
             <BlockContent content={contentCurriculos} />
         </AdminLayout>

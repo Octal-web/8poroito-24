@@ -42,7 +42,8 @@ const Page = () => {
                         <p><b>E-mail</b>: {curriculo.email}</p>
                         <p><b>Whatsapp</b>: {curriculo.whatsapp}</p>
                         <p><b>Pretensão Salarial</b>: {curriculo.pretensao}</p>
-                        <p><b>Cargo Pretendido</b>: {curriculo.cargo }</p>
+                        <p><b>Vaga</b>: {curriculo.vaga || 'Banco de talentos'}</p>
+                        {curriculo.cargo && <p><b>Cargo Pretendido</b>: {curriculo.cargo}</p>}
 
                         {curriculo.redes_sociais && curriculo.redes_sociais.length > 0 && (
                             <div className="my-1">

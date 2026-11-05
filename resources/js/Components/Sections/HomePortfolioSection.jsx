@@ -71,7 +71,7 @@ export function HomePortfolioSection({ conteudos, portfolios }) {
                     <div className="pt-10 md:pt-[20%] max-w-md mx-auto">
                         {portfolioText.map((parte, index) => (
                             <div key={index} className="overflow-hidden">
-                                <h2 ref={portfolioRef.current[index]} className="font-secondary text-center text-6xl md:text-8xl">{parte.trim()}</h2>
+                                <h2 ref={portfolioRef.current[index]} className="text-center text-4xl sm:text-5xl md:text-6xl font-semibold !leading-tight uppercase">{parte.trim()}</h2>
                             </div>
                         ))}
                     </div>
@@ -90,7 +90,7 @@ export function HomePortfolioSection({ conteudos, portfolios }) {
 
                     {/* <div className="max-w-3xl mx-auto mb-20">
                         <img src="/site/img/mail.png" alt="" className="mx-auto mb-2" />
-                        <h3 className="font-secondary text-center text-4xl mb-5">Quero ficar por dentro</h3>
+                        <h3 className="text-center text-4xl mb-5">Quero ficar por dentro</h3>
                         <div className="max-w-md mx-auto text-center font-light mb-9">
                             <p>Cadastre-se para receber noticias e atualização mais recentes de tudo que pode impactar os seu negócio.</p>
                         </div>

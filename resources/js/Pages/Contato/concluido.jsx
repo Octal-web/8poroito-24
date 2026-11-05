@@ -8,7 +8,7 @@ const Page = () => {
     return (
         <DefaultLayout>
             <section className="container flex min-h-[50vh] flex-col items-center justify-center py-20 text-center">
-                <h2 className="font-secondary text-5xl tracking-tight mb-5">
+                <h2 className="text-5xl tracking-tight mb-5">
                     {proposta ? 'Solicitação enviada!' : 'Mensagem enviada!'}
                 </h2>
                 <p className="max-w-xl mb-8">

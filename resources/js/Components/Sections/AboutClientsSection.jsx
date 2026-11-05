@@ -42,7 +42,7 @@ export function AboutClientsSection({ clientes }) {
             </div> */}
 
             <div className="container max-w-large">
-                <h4 className="relative text-2xl sm:text-3xl text-center text-white uppercase mb-15 max-w-60 md:max-w-80 lg:max-w-full mx-auto">
+                <h4 className="relative text-2xl sm:text-3xl text-center text-white uppercase mb-15 max-w-60 md:max-w-80 lg:max-w-full mx-auto pt-10 md:pt-24">
                     Marcas que contam a nossa história
                 </h4>
                 <div className="brands-container mb-15">
@@ -58,7 +58,7 @@ export function AboutClientsSection({ clientes }) {
                 <h5 className="home-brand text-1xl text-center text-white mb-6"><span className="font-bold">Vamos transformar sua marca </span>em emoção?</h5>
 
                 <a
-                    href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663"
+                    href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663"
                     rel="noopener noreferrer"
                     className="home-brand relative overflow-hidden block w-64 border border-white text-center h-16 h-16 leading-[4rem] font-light text-white uppercase mx-auto"
                     target="_blank"

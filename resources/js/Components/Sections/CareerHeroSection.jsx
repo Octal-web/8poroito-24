@@ -96,7 +96,7 @@ export function CareerHeroSection({ conteudos }) {
                 </div>
             </div>
 
-            <div className="relative container z-[1]">
+            {/* <div className="relative container z-[1]">
                 <div className="pb-20 md:py-20">
                     <div className="text-white text-center">
                         <h4 className="text-5xl font-bold mb-6">{conteudos[1].titulo}</h4>
@@ -122,7 +122,7 @@ export function CareerHeroSection({ conteudos }) {
                     </div>
                 </div>
             </div>
-            {/* <div className="absolute top-[-130px] left-[-300px] md:left-[-600px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
+             <div className="absolute top-[-130px] left-[-300px] md:left-[-600px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
             </div>
             <div className="absolute bottom-[-500px] right-[-200px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">

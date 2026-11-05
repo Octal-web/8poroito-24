@@ -36,7 +36,7 @@ export const HomeNews = () => {
         <div className="relative">
             {successMessage && (
                 <div className="absolute inset-0 bg-white text-center px-4 pb-2 pt-10" role="alert">
-                    <div className="font-secondary text-5xl mb-2">Feito!</div>
+                    <div className="text-5xl mb-2">Feito!</div>
                     <div className="font-light">{successMessage}</div>
                 </div>
             )}

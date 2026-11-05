@@ -49,7 +49,7 @@ export function HomeHeroSection() {
     };
 
     return (
-        <section className="relative bg-black">
+        <section className="relative bg-black z-[1]">
             <div className="absolute m-auto left-0 right-0 w-full h-full">
                 <VideoPlayer
                     src="/site/video/videoBanner.mp4"
@@ -61,11 +61,11 @@ export function HomeHeroSection() {
                 />
             </div>
 
-            <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black transition-opacity duration-700 ${isVideoLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-                <div className="w-12 h-12 rounded-full border-4 border-white/20 border-t-white animate-spin" role="status" aria-label="Carregando"></div>
+            <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black transition-opacity duration-700 ${isVideoLoading ? "opacity-100" : "opacity-50 pointer-events-none"}`}>
+                <div className={`w-12 h-12 rounded-full border-4 border-white/20 border-t-white animate-spin ${isVideoLoading ? "opacity-100" : "opacity-0"}`} role="status" aria-label="Carregando"></div>
             </div>
 
-            <div className="relative max-h-[100vh] pt-[7%] 2xl:pt-[12%] pb-10 h-screen">
+            <div className="relative max-h-[100vh] pt-[7%] 2xl:pt-[12%] pb-10 h-screen z-10">
                 <div className="container">
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-white mt-40 mb-20 md:my-0">
                         <p className="text-2xl mt-0 md:mt-5 lg:text-3xl xl:text-4xl font-light">Você conhece o</p>

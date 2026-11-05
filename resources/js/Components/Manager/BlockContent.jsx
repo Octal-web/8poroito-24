@@ -110,28 +110,29 @@ export const BlockContent = ({ content }) => {
                             <th className="border px-4 py-4 w-1/6 text-left">Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {content.editavel ? (
-                            <ReactSortable
-                                key={index}
-                                animation={150}
-                                list={state}
-                                setList={setState}
-                                forceFallback={true}
-                                className="contents"
-                            >
-                                {state.map((conteudo, index) => (
-                                    <IndividualItem 
-                                        individualContent={conteudo}
-                                        imagensPath={content.imagensPath}
-                                        imagensClass={content.imgClass}
-                                        controller={content.controller}
-                                        index={index}
-                                    />
-                                ))}
-                            </ReactSortable>
-                        ) : (
-                            state.map((conteudo, index) => (
+                    {content.editavel ? (
+                        <ReactSortable
+                            tag="tbody"
+                            animation={150}
+                            list={state}
+                            setList={setState}
+                            forceFallback={true}
+                        >
+                            {state.map((conteudo, index) => (
+                                <IndividualItem
+                                    key={conteudo.id}
+                                    individualContent={conteudo}
+                                    imagensPath={content.imagensPath}
+                                    imagensClass={content.imgClass}
+                                    controller={content.controller}
+                                    index={index}
+                                    edit={content.editavel}
+                                />
+                            ))}
+                        </ReactSortable>
+                    ) : (
+                        <tbody>
+                            {state.map((conteudo, index) => (
                                 <IndividualItem 
                                     key={index}
                                     individualContent={conteudo}
@@ -141,9 +142,9 @@ export const BlockContent = ({ content }) => {
                                     index={index}
                                     edit={content.editavel}
                                 />
-                            ))
-                        )}
-                    </tbody>
+                            ))}
+                        </tbody>
+                    )}
                 </table>
             </div>
         </div>

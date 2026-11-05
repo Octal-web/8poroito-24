@@ -6,6 +6,7 @@ import { InputTextArea } from './InputTextArea';
 import { InputCKEditor } from './InputCKEditor';
 import { InputFileImage } from './InputFileImage';
 import { InputCheckbox } from './InputCheckbox';
+import { InputSelect } from './InputSelect';
 
 export const FormGroup = ({ input, idioma, imagem, value, toolbar, onChange, handleImageCrop }) => {
     switch (input.tipo) {
@@ -61,6 +62,17 @@ export const FormGroup = ({ input, idioma, imagem, value, toolbar, onChange, han
                     size={{ largura: input.largura, altura: input.altura }} 
                     allowCrop={input.crop ? true : false} 
                     onImageCrop={handleImageCrop}
+                />
+            );
+        case 'selecao':
+            return (
+                <InputSelect
+                    title={input.titulo}
+                    name={input.name}
+                    value={value}
+                    idioma={idioma.codigo}
+                    options={input.opcoes}
+                    onChange={onChange}
                 />
             );
         case 'check':

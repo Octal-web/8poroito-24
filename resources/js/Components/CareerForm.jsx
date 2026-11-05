@@ -19,7 +19,7 @@ const jobOptions = [
     { id: '5', value: '5', label: 'Diretor de Arte'}
 ]
 
-export const CareerForm = () => {
+export const CareerForm = ({ vagaId = null }) => {
     const [fileName, setFileName] = useState('');
     
     const { data, setData, post, processing, errors, clearErrors } = useForm({
@@ -33,6 +33,7 @@ export const CareerForm = () => {
         apresentacao: '',
         projetos: '',
         cargo: '',
+        vaga: vagaId,
         politica: false,
         veracidade: false
     });
@@ -235,16 +236,22 @@ export const CareerForm = () => {
 
             <div className="mb-5 2xl:mb-10 flex gap-5 lg:gap-15 flex-col lg:flex-row">
                 <div className="w-full">
-                    <Select
-                        name="cargo"
-                        options={jobOptions}
-                        isSearchable={false}
-                        classNamePrefix="react-select"
-                        placeholder="Escolha sua vaga"
-                        onChange={handleJobChange}
-                        value={jobOptions.find(option => option.value === data.cargo)}
-                    />
-                    {errors.cargo && <p className="text-red-500 mt-2">{errors.cargo}</p>}
+                    {vagaId ? (
+                        errors.vaga && <p className="text-red-500">{errors.vaga}</p>
+                    ) : (
+                        <>
+                            <Select
+                                name="cargo"
+                                options={jobOptions}
+                                isSearchable={false}
+                                classNamePrefix="react-select"
+                                placeholder="Escolha sua vaga"
+                                onChange={handleJobChange}
+                                value={jobOptions.find(option => option.value === data.cargo)}
+                            />
+                            {errors.cargo && <p className="text-red-500 mt-2">{errors.cargo}</p>}
+                        </>
+                    )}
                 </div>
 
                 <div className="w-full">

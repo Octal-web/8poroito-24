@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\Curriculo;
 use App\Models\Idioma;
+use App\Models\Vaga;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,6 +20,32 @@ class CarreirasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
+        $idioma = inertia()->getShared('idioma');
+
+        $vagas = Vaga::query()
+            ->where([
+                'excluido' => null
+            ])
+            ->with([
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma->codigo)
+                            ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
+                }
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->map(function ($vaga) {
+                return [
+                    'id' => $vaga->id,
+                    'visivel' => $vaga->visivel ? true : false,
+                    'titulo' => $vaga->vagasIdiomas->isNotEmpty() ? $vaga->vagasIdiomas[0]->titulo : null,
+                ];
+            });
+
         $curriculos = Curriculo::query()
             ->where([
                 'excluido' => NULL
@@ -48,6 +75,7 @@ class CarreirasController extends Controller
             });
 
         return Inertia::render('Manager/Carreiras/index', [
+            'vagas' => $vagas,
             'curriculos' => $curriculos
         ]);
     }
@@ -73,6 +101,11 @@ class CarreirasController extends Controller
                     $q->where([
                         'excluido' => NULL
                     ]);
+                },
+                'vaga.vagasIdiomas' => function ($q) {
+                    $q->whereHas('idiomas', function ($r) {
+                        $r->where('padrao', true);
+                    });
                 }
             ])
             ->first();
@@ -87,7 +120,8 @@ class CarreirasController extends Controller
             'email' => $curriculo->email,
             'whatsapp' => $curriculo->whatsapp,
             'pretensao' => $curriculo->pretensao,
-            'cargo' => $curriculo->cargo->nome,
+            'cargo' => $curriculo->cargo ? $curriculo->cargo->nome : null,
+            'vaga' => $curriculo->vaga && $curriculo->vaga->vagasIdiomas->isNotEmpty() ? $curriculo->vaga->vagasIdiomas[0]->titulo : null,
             'apresentacao' => $curriculo->apresentacao,
             'projetos' => $curriculo->projetos,
             'data' => $curriculo->criado->format('d/m/Y H:i'),
