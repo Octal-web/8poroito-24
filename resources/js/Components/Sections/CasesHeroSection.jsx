@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function CasesHeroSection() {
+export function CasesHeroSection({ content }) {
     const titleRef = useRef(null);
 
     useEffect(() => {
@@ -28,10 +28,8 @@ export function CasesHeroSection() {
     return (
         <section ref={titleRef} className="mt-20 sm:mt-30 mb-20">
             <div className="container max-w-small">
-                <h4 className="text-5xl text-center font-light mb-5">Cases</h4>
-                <div className="text-center">
-                    <p>Conheça como transformamos <br/><strong>marcas em emoção</strong>.</p>
-                </div>
+                <h4 className="text-5xl text-center font-light mb-5">{content.titulo}</h4>
+                <div className="text-center" dangerouslySetInnerHTML={{ __html: content.texto }} />
             </div>
         </section>
     );

@@ -8,13 +8,96 @@ use Inertia\Inertia;
 
 use App\Models\Curriculo;
 use App\Models\RedeSocial;
+use App\Models\Vaga;
+
+use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Mail;
 
 class CarreirasController extends Controller
 {
     public function index() {
-        return Inertia::render('Carreiras/index');
+
+        $idioma = view()->shared('idioma');
+
+        $vagas = Vaga::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true
+            ])
+            ->whereHas('vagasIdiomas')
+            ->with([
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma)
+                        ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
+                },
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->filter(fn ($vaga) => $vaga->vagasIdiomas->isNotEmpty())
+            ->map(function($vaga) {
+                return [
+                    'id' => $vaga->id,
+                    'titulo' => $vaga->vagasIdiomas[0]->titulo,
+                    'tipo' => $vaga->vagasIdiomas[0]->tipo,
+                    'slug' => Str::slug($vaga->vagasIdiomas[0]->titulo),
+                ];
+            })
+            ->values();
+
+        return Inertia::render('Carreiras/index', [
+            'vagas' => $vagas,
+        ]);
+    }
+
+    public function vaga($id, $slug = null) {
+
+        $idioma = view()->shared('idioma');
+
+        $vaga = Vaga::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true,
+                'id' => $id
+            ])
+            ->with([
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma)
+                        ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
+                },
+            ])
+            ->first();
+
+        if (!$vaga || $vaga->vagasIdiomas->isEmpty()) {
+            return Inertia::location(route('Carreiras.index'));
+        }
+
+        $vagaIdioma = $vaga->vagasIdiomas[0];
+
+        $pagina = inertia()->getShared('pagina');
+        $descricao = Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($vagaIdioma->descricao)))), 155);
+
+        $pagina['titulo'] = $vagaIdioma->titulo . ' | Carreiras | 8poroito';
+        $pagina['descricao'] = $descricao;
+        $pagina['tituloCompartilhamento'] = $vagaIdioma->titulo . ' | Carreiras | 8poroito';
+        $pagina['descricaoCompartilhamento'] = $descricao;
+
+        return Inertia::render('Carreiras/vaga', [
+            'pagina' => $pagina,
+            'vaga' => [
+                'id' => $vaga->id,
+                'titulo' => $vagaIdioma->titulo,
+                'tipo' => $vagaIdioma->tipo,
+                'descricao' => $vagaIdioma->descricao,
+            ],
+        ]);
     }
 
     /**
@@ -34,7 +117,8 @@ class CarreirasController extends Controller
                 $curriculo->arquivo = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('arq')->extension());
             }
 
-            $curriculo->cargo_id = $request->cargo;
+            $curriculo->cargo_id = $request->cargo ?: null;
+            $curriculo->vaga_id = $request->vaga ?: null;
             $curriculo->pretensao = $request->pretensao;
             $curriculo->apresentacao = $request->apresentacao;
             $curriculo->projetos = $request->projetos;
@@ -51,7 +135,7 @@ class CarreirasController extends Controller
                     'linkedin' => 'Linkedin',
                 ];
 
-                foreach ($request->input('redesSociais') as $key => $value) {
+                foreach ($request->input('redesSociais') as $value) {
                     $rede_social = new RedeSocial;
                     $rede_social->tipo = $redes_sociais[$value['tipo']['value']] ?? $value['tipo']['value'];
                     $rede_social->link = $value['link'];
@@ -76,7 +160,7 @@ class CarreirasController extends Controller
                     Mail::send('emails.curriculum', $data, function($message) use ($data) {
                         $message->from('site@8poroito.com.br')
                                 ->to('trabalheconosco@8poroito.com.br')
-                                ->to('rafael@8poroito.com.br')
+                                ->bcc('rafael@8poroito.com.br')
                                 ->subject('Um novo currículo foi enviado através da página de recrutamento!');
 
                         if ($data['curriculo']) {

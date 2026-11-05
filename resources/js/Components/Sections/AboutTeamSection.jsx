@@ -41,7 +41,7 @@ export function AboutTeamSection({ text }) {
 
                 <h4 className="text-white font-bold text-center text-xl">Você também quer conquistar notoriedade no seu mercado?</h4>
 
-                <Link href="/contato" className="block w-48 border border-white text-white text-center h-12 leading-[3rem] font-light uppercase mx-auto mt-8 transition-colors hover:bg-white hover:text-black">Quero</Link>
+                <Link href="/contato" className="block w-48 border border-white text-white text-center h-12 leading-[3rem] font-light uppercase mx-auto mt-8 md:mt-16 transition-colors hover:bg-white hover:text-black">Quero</Link>
             </div>
 
             <div className="container max-w-large">

@@ -9,6 +9,8 @@ import { SmoothScrollContext } from '../Contexts/SmoothScrollContext';
 import { ProposalModal } from '../Components/ProposalModal';
 import { CookieModal } from '../Components/CookieModal'; 
 
+const WHATSAPP_URL = 'https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663';
+
 const DefaultLayout = ({ children }) => {
     const { controller, pagina, notifyCookie } = usePage().props;
 
@@ -20,6 +22,21 @@ const DefaultLayout = ({ children }) => {
     const [trackingEnabled, setTrackingEnabled] = useState(false);
 
     const lenisRef = useRef(null);
+    const footerRef = useRef(null);
+    const [isNearFooter, setIsNearFooter] = useState(false);
+
+    useEffect(() => {
+        const footer = footerRef.current;
+        if (!footer) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsNearFooter(entry.isIntersecting),
+            { rootMargin: '0px 0px 150px 0px' }
+        );
+        observer.observe(footer);
+
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         const lenis = new Lenis({
@@ -166,7 +183,7 @@ const DefaultLayout = ({ children }) => {
                                         </div>
                                         <div className="w-full max-w-[15rem] md:w-auto md:max-w-none">
                                             <a
-                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663"
+                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663"
                                                 className="button relative overflow-hidden block w-full md:w-64 border border-white text-center h-14 md:h-16 md:text-base font-light uppercase flex gap-3 justify-center items-center"
                                                 target="_blank"
                                                 style={{
@@ -197,7 +214,19 @@ const DefaultLayout = ({ children }) => {
                 {children}
             </main>
 
-            <footer className="bg-black py-16 text-white md:py-20">
+            <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Fale conosco pelo WhatsApp"
+                aria-hidden={isNearFooter}
+                tabIndex={isNearFooter ? -1 : 0}
+                className={`fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[2] flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-all duration-300 hover:scale-110 ${isNearFooter ? 'pointer-events-none translate-y-4 opacity-0' : 'translate-y-0 opacity-100'}`}
+            >
+                <img src="/site/img/whatsapp.png" alt="" className="h-7 w-7 md:h-8 md:w-8 object-contain" />
+            </a>
+
+            <footer ref={footerRef} className="bg-black pt-16 text-white md:pt-20 pb-6">
                 <div className="container">
                     <h2 className="text-center text-2xl font-semibold uppercase tracking-[0.18em] sm:text-3xl md:text-4xl lg:text-5xl">O poder da marca</h2>
 
@@ -227,11 +256,11 @@ const DefaultLayout = ({ children }) => {
                                     R. João Goulart, 696 - sala 04<br/>
                                     São José, Garibaldi - RS, 95720-000
                                 </a>
-                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99365-5663</a>
+                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99365-5663</a>
                                 <a href="mailto:falecom@8poroito.com.br" className="block break-words transition-opacity hover:opacity-70">falecom@8poroito.com.br</a>
                             </address>
                             <a
-                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=555499365663"
+                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663"
                                 className="button relative flex min-h-[3.5rem] w-full max-w-[16rem] items-center justify-center gap-3 overflow-hidden border border-white/60 px-4 py-3 text-sm font-light uppercase hover:border-white"
                                 target="_blank" rel="noopener noreferrer"
                                 style={{ background: `radial-gradient(circle at ${whatsappGradientPosition.x}% ${whatsappGradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)` }}
@@ -253,6 +282,8 @@ const DefaultLayout = ({ children }) => {
                             <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/linkedin.png" alt="LinkedIn" /></a></li>
                         </ul>
                     </div>
+
+                    <p className="mt-8 text-center text-xs text-white/40">Razão Social: 8poroito Comunicacao e Marketing LTDA - 09.428.081/0001-08</p>
                 </div>
             </footer>
 

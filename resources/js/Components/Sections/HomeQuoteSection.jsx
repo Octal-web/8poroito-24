@@ -71,7 +71,7 @@ export function HomeQuoteSection({ conteudos }) {
     return (
         <section id="mais" className="relative pt-15 md:pt-20 md:pb-40">
             <div className="container max-w-medium">
-                <div ref={commaRef} aria-hidden="true" className="font-secondary text-9xl text-center -mb-10 sm:-mb-6 md:mb-0">“</div>
+                <div ref={commaRef} aria-hidden="true" className="text-9xl text-center -mb-10 sm:-mb-6 md:mb-0">“</div>
                 <div ref={quoteRef} className="text-center text-2xl lg:text-3xl leading-[1.4em]" dangerouslySetInnerHTML={{ __html: conteudos[0].texto }}>
                 </div>
                 <div className="overflow-hidden">

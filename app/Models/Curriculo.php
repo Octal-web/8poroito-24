@@ -21,6 +21,11 @@ class Curriculo extends Model
         return $this->belongsTo(Cargo::class);
     }
 
+    public function vaga()
+    {
+        return $this->belongsTo(Vaga::class);
+    }
+
     public function redes_sociais()
     {
         return $this->hasMany(RedeSocial::class);
