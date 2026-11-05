@@ -82,7 +82,7 @@ export function CareerHeroSection({ conteudos }) {
             <div className="absolute top-0 right-[-20%] md:right-0 w-[150%] h-[150%] transform scale-x-75 animate-spin" style={{backgroundImage: 'radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 1) 70%)', animationDirection: 'alternate'}}></div>
 
             <div className="relative container max-w-medium z-[1]">
-                <div className="min-h-[70dvh] flex flex-col justify-center xl:mt-8">
+                <div className="min-h-[60dvh] flex flex-col justify-center xl:mt-8">
                     <div ref={callRef}>
                         <div className="overflow-hidden">
                             <h4 ref={downRef} className="text-2xl md:text-5xl text-white text-center font-light leading-tight tracking-tight mb-1">{titleParts[0]}</h4>
@@ -91,7 +91,7 @@ export function CareerHeroSection({ conteudos }) {
                         <h2 ref={titleRef} className="text-4xl md:text-[5.4rem] text-white text-center font-bold leading-none tracking-tight mb-1">{titleParts[1]}</h2>
                     </div>
 
-                    <div className="max-w-xl text-white text-center font-light mx-auto px-4 mt-20" dangerouslySetInnerHTML={{ __html: conteudos[0].texto }}>
+                    <div className="max-w-xl text-white text-center font-light mx-auto px-4 mt-5 md:mt-20" dangerouslySetInnerHTML={{ __html: conteudos[0].texto }}>
                     </div>
                 </div>
             </div>
