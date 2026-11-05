@@ -120,7 +120,7 @@ const DefaultLayout = ({ children }) => {
 
                 <link rel="icon" href={`/favicon.ico`} type="image/x-icon" />
             </Head>
-            <header className={`header absolute top-0 left-0 right-0 z-[2] text-white ${['Cases', 'Politica', 'Contato', 'Politicas'].includes(controller) && 'bg-black'}`}>
+            <header className={`header absolute top-0 left-0 right-0 z-[3] text-white ${['Cases', 'Politica', 'Contato', 'Politicas'].includes(controller) && 'bg-black'}`}>
                 <div className="container">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between w-full my-8 xl:my-10 2xl:my-15">
@@ -177,7 +177,6 @@ const DefaultLayout = ({ children }) => {
                                             <ul className="flex gap-4 md:gap-5">
                                                 <li><a href="https://www.instagram.com/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/instagram.png`} alt="instagram" /></a></li>
                                                 <li><a href="https://www.facebook.com/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/facebook.png`} alt="facebook" /></a></li>
-                                                <li><a href="https://www.behance.net/agencia8poroito" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/behance.png`} alt="behance" /></a></li>
                                                 <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank"><img className="h-7 w-7 md:h-auto md:w-auto object-contain" src={`/site/img/linkedin.png`} alt="linkedin" /></a></li>
                                             </ul>
                                         </div>
@@ -278,7 +277,6 @@ const DefaultLayout = ({ children }) => {
                         <ul aria-label="Redes sociais" className="flex items-center gap-5">
                             <li><a href="https://www.instagram.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/instagram.png" alt="Instagram" /></a></li>
                             <li><a href="https://www.facebook.com/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/facebook.png" alt="Facebook" /></a></li>
-                            {/* <li><a href="https://www.behance.net/agencia8poroito" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/behance.png" alt="Behance" /></a></li> */}
                             <li><a href="https://www.linkedin.com/company/8poroito/" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70"><img className="h-6 w-6 object-contain" src="/site/img/linkedin.png" alt="LinkedIn" /></a></li>
                         </ul>
                     </div>
