@@ -6,12 +6,12 @@ import { CareerJobsSection } from '../../Components/Sections/CareerJobsSection';
 import { CareerContactSection } from '../../Components/Sections/CareerContactSection';
 
 const Page = () => {
-    const { conteudos, vagas } = usePage().props;
+    const { conteudos, imagensGaleria, vagas } = usePage().props;
 
     return (
         <DefaultLayout>
             <CareerHeroSection conteudos={conteudos} />
-            <CareerContactSection content={conteudos[5]}>
+            <CareerContactSection content={conteudos[5]} images={imagensGaleria}>
                 {vagas?.length > 0 && <CareerJobsSection vagas={vagas} />}
             </CareerContactSection>
         </DefaultLayout>

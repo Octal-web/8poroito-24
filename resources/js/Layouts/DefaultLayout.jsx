@@ -221,7 +221,7 @@ const DefaultLayout = ({ children }) => {
                 aria-label="Fale conosco pelo WhatsApp"
                 aria-hidden={isNearFooter}
                 tabIndex={isNearFooter ? -1 : 0}
-                className={`fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[2] flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-all duration-300 hover:scale-110 ${isNearFooter ? 'pointer-events-none translate-y-4 opacity-0' : 'translate-y-0 opacity-100'}`}
+                className={`fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[2] flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-black shadow-lg transition-all duration-300 hover:scale-110 ${isNearFooter ? 'pointer-events-none translate-y-4 opacity-0' : 'translate-y-0 opacity-100'}`}
             >
                 <img src="/site/img/whatsapp.png" alt="" className="h-7 w-7 md:h-8 md:w-8 object-contain" />
             </a>

@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Curriculo;
 use App\Models\RedeSocial;
 use App\Models\Vaga;
+use App\Models\Imagem;
 
 use Illuminate\Support\Str;
 
@@ -49,8 +50,27 @@ class CarreirasController extends Controller
             })
             ->values();
 
+        $imagensGaleria = Imagem::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true,
+                'controladora' => 'Carreiras',
+                'acao' => 'index'
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->limit(4)
+            ->get()
+            ->map(function($imagem) {
+                return [
+                    'id' => $imagem->id,
+                    'imagem' => asset('/content/images/' . $imagem->imagem),
+                ];
+        });
+
         return Inertia::render('Carreiras/index', [
             'vagas' => $vagas,
+            'imagensGaleria' => $imagensGaleria
         ]);
     }
 

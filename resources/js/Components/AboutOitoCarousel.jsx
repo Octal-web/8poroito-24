@@ -47,7 +47,7 @@ export const AboutOitoCarousel = ({ data }) => {
             {data.map((imagem, index) => (
                 <div key={index}>
                     <div className="relative block mx-8 sm:mx-20 md:mx-15 xl:mx-24 2xl:mx-30 mt-30 xs:mb-30">
-                        <img src={`/content/images/${imagem.imagem}`} alt="Espaço da 8poroito" loading="lazy" decoding="async" className="carousel-image w-full mb-10 transition-all" />
+                        <img src={imagem.imagem} alt="Espaço da 8poroito" loading="lazy" decoding="async" className="carousel-image w-full mb-10 transition-all" />
                         <div className="carousel-shadow absolute top-0 left-0 w-full h-full bg-black opacity-50 transition-all"></div>
                     </div>
                 </div>
