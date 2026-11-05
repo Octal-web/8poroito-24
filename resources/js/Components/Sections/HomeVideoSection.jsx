@@ -51,6 +51,7 @@ export function HomeVideoSection() {
             <div className={`relative container ${playing ? 'videoPlay' : 'videoPause'}`}>
                 <VideoPlayer
                     src="/site/video/videoAbout.mp4"
+                    poster="/site/img/videoAboutPoster.webp"
                     isPlaying={playing}
                     classList={['w-full', 'relative', 'z-[1]', 'max-h-[90vh]']}
                     autoplay={false}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export const VideoPlayer = ({ src, classList = [], isPlaying, autoplay, onPlaying, onBlocked }) => {
+export const VideoPlayer = ({ src, poster, classList = [], isPlaying, autoplay, onPlaying, onBlocked }) => {
     const videoRef = useRef(null);
     const className = classList.join(' ');
     const [videoError, setVideoError] = useState(false);
@@ -80,6 +80,7 @@ export const VideoPlayer = ({ src, classList = [], isPlaying, autoplay, onPlayin
                 className={className}
                 loop
                 playsInline
+                poster={poster}
                 autoPlay={autoplay}
                 muted={autoplay}
                 // Sem autoplay, só baixa o vídeo quando o usuário der play (videoAbout tem ~45 MB).
