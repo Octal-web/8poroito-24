@@ -169,10 +169,25 @@ class CarreirasController extends Controller
                     $request->file('arq')->move(public_path('content/resumes/'), $curriculo->arquivo);
                 }
 
+                $curriculo->load([
+                    'cargo:id,nome',
+                    'vaga.vagasIdiomas' => function ($q) {
+                        $q->whereHas('idiomas', function ($r) {
+                            $r->where('padrao', true);
+                        });
+                    },
+                    'redes_sociais',
+                ]);
+
                 $data['nome'] = $request->nome;
                 $data['whatsapp'] = $request->whatsapp;
                 $data['email'] = $request->email;
+                $data['vaga'] = $curriculo->vaga && $curriculo->vaga->vagasIdiomas->isNotEmpty() ? $curriculo->vaga->vagasIdiomas[0]->titulo : null;
+                $data['cargo'] = $curriculo->cargo ? $curriculo->cargo->nome : null;
+                $data['pretensao'] = $request->pretensao;
                 $data['apresentacao'] = $request->apresentacao;
+                $data['projetos'] = $request->projetos;
+                $data['redesSociais'] = $curriculo->redes_sociais->map(fn ($rede) => ['tipo' => $rede->tipo, 'link' => $rede->link])->all();
                 $data['curriculo'] = $curriculo->arquivo ? $curriculo->arquivo : null;
 
                 // O currículo já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
@@ -181,7 +196,10 @@ class CarreirasController extends Controller
                         $message->from('site@8poroito.com.br')
                                 ->to('trabalheconosco@8poroito.com.br')
                                 ->bcc('rafael@8poroito.com.br')
-                                ->subject('Um novo currículo foi enviado através da página de recrutamento!');
+                                ->replyTo($data['email'], $data['nome'])
+                                ->subject($data['vaga']
+                                    ? 'Um novo currículo veio através do site - Vaga: ' . $data['vaga']
+                                    : 'Um novo currículo veio através do site');
 
                         if ($data['curriculo']) {
                             $message->attach(public_path('content/resumes/' . $data['curriculo']));
