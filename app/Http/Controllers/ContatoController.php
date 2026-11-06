@@ -43,14 +43,22 @@ class ContatoController extends Controller
                 $data['nome'] = $request->nome;
                 $data['email'] = $request->email;
                 $data['telefone'] = $request->telefone;
-                $data['empresa'] = $request->empresa . ' - ' . $request->cargo;
+                $data['empresa'] = $request->empresa;
+                $data['cargo'] = $request->cargo;
+                $data['mensagem'] = $request->mensagem;
+                $data['proposta'] = (bool) $contato->proposta;
 
-                // Mail::send('emails.curriculum', $data, function($message)use($data) {
-                //     $message->from('site@8poroito.com.br')
-                //             // ->to('trabalheconosco@8poroito.com.br')
-                //             ->to('rafael@8poroito.com.br')
-                //             ->subject('Obrigado por entrar em contato!');
-                // });
+                // O contato já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
+                try {
+                    Mail::send('emails.contact', $data, function($message) use ($data) {
+                        $message->from('site@8poroito.com.br')
+                                ->to('atendimento@8poroito.com.br')
+                                ->replyTo($data['email'], $data['nome'])
+                                ->subject('Um novo contato veio através do site' . ($data['proposta'] ? ' (solicitou proposta)' : ''));
+                    });
+                } catch (\Throwable $e) {
+                    report($e);
+                }
 
                 return Inertia::location(route('Contato.concluido', [
                     'token' => $token

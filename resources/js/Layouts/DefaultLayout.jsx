@@ -9,7 +9,7 @@ import { SmoothScrollContext } from '../Contexts/SmoothScrollContext';
 import { ProposalModal } from '../Components/ProposalModal';
 import { CookieModal } from '../Components/CookieModal'; 
 
-const WHATSAPP_URL = 'https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663';
+const WHATSAPP_URL = 'https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554999365663';
 
 const DefaultLayout = ({ children }) => {
     const { controller, pagina, notifyCookie } = usePage().props;
@@ -182,7 +182,7 @@ const DefaultLayout = ({ children }) => {
                                         </div>
                                         <div className="w-full max-w-[15rem] md:w-auto md:max-w-none">
                                             <a
-                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663"
+                                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554999365663"
                                                 className="button relative overflow-hidden block w-full md:w-64 border border-white text-center h-14 md:h-16 md:text-base font-light uppercase flex gap-3 justify-center items-center"
                                                 target="_blank"
                                                 style={{
@@ -255,11 +255,11 @@ const DefaultLayout = ({ children }) => {
                                     R. João Goulart, 696 - sala 04<br/>
                                     São José, Garibaldi - RS, 95720-000
                                 </a>
-                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99365-5663</a>
+                                <a href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554999365663" target="_blank" rel="noopener noreferrer" className="block transition-opacity hover:opacity-70">(54) 99936-5663</a>
                                 <a href="mailto:falecom@8poroito.com.br" className="block break-words transition-opacity hover:opacity-70">falecom@8poroito.com.br</a>
                             </address>
                             <a
-                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554993655663"
+                                href="https://api.whatsapp.com/send?text=Ol%C3%A1%21%20Passei%20pelo%20seu%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%21&phone=5554999365663"
                                 className="button relative flex min-h-[3.5rem] w-full max-w-[16rem] items-center justify-center gap-3 overflow-hidden border border-white/60 px-4 py-3 text-sm font-light uppercase hover:border-white"
                                 target="_blank" rel="noopener noreferrer"
                                 style={{ background: `radial-gradient(circle at ${whatsappGradientPosition.x}% ${whatsappGradientPosition.y}%, rgba(255, 255, 255, 0.3), transparent)` }}
