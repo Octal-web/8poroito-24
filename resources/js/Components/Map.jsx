@@ -6,7 +6,10 @@ export const Map = ({ apiKey }) => {
     const geocoderRef = useRef(null);
 
     useEffect(() => {
-        if (!apiKey) return;
+        if (!apiKey) {
+            console.warn("[Map] googleMapsApiKey ausente: defina GOOGLE_MAPS_API_KEY no .env do servidor.");
+            return;
+        }
 
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&callback=initMap&v=weekly`;

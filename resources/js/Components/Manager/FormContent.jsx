@@ -87,7 +87,7 @@ export const FormContent = ({ content, full, idioma }) => {
     return (
         <div className={`mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md ${content.minimizavel && ' h-fit'}`}>
             <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-black dark:text-white">{content.bloco}</h3>
+                <h3 className="text-xl font-bold text-black">{content.bloco}</h3>
 
                 {content.galeria &&
                     <Link
