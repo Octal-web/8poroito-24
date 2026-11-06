@@ -54,7 +54,9 @@ export function AboutTeamSection({ text }) {
                         autoplay={false}
                     />
 
-                    <button className="playBtn absolute inset-0 m-auto xl:w-40 h-30 w-30 xl:h-40 2xl:w-fit 2xl:h-fit transition-all z-[1]" onClick={() => setPlaying(!playing)} aria-label={playing ? 'Pausar vídeo' : 'Reproduzir vídeo'}><img src={`/site/img/${playing ? 'pauseBtn' : 'playBtn'}.png`} alt="" className="block" /></button>
+                    <button className="absolute inset-0 flex items-center justify-center cursor-pointer z-[2]" onClick={() => setPlaying(!playing)} aria-label={playing ? 'Pausar vídeo' : 'Reproduzir vídeo'}>
+                        {!playing && <img src="/site/img/playBtn.png" alt="" className="playBtn block xl:w-40 h-30 w-30 xl:h-40 2xl:w-fit 2xl:h-fit transition-all" />}
+                    </button>
                 </div>
             </div>
         </section>
