@@ -198,7 +198,7 @@ export const Map = ({ apiKey }) => {
                         animation: window.google.maps.Animation.DROP,
                         visible: true,
                         icon: {
-                            url: "site/img/location-pin.png",
+                            url: "/site/img/location-pin.png",
                             labelOrigin: new window.google.maps.Point(25, 90),
                         },
                         label: {
