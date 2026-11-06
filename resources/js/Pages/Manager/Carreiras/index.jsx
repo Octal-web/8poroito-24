@@ -10,10 +10,11 @@ import { ConfirmModal } from '../../../Components/Manager/ConfirmModal';
 import { PageSettings } from '../../../Components/Manager/PageSettings';
 import { FormContent } from '../../../Components/Manager/FormContent';
 import { BlockContent } from '../../../Components/Manager/BlockContent';
+import { CurriculosList } from '../../../Components/Manager/CurriculosList';
 
 const Page = () => {
     // Content
-    const { pagina, conteudos, idioma, idiomas, vagas, curriculos } = usePage().props;
+    const { pagina, conteudos, idioma, idiomas, vagas, cargos, curriculos, filtros } = usePage().props;
 
     const breadcrumbItems = [
         // { label: 'Home', link: 'Home.index' },
@@ -28,14 +29,6 @@ const Page = () => {
         conteudos: vagas
     };
 
-    const contentCurriculos = {
-        nome: ['Currículos', 'currículo'],
-        controller: 'Carreiras',
-        imagens: false,
-        editavel: false,
-        conteudos: curriculos
-    };
-
     return (
         <AdminLayout>
             <Breadcrumb icon={faUser} items={breadcrumbItems} current="Carreiras" idioma={idioma.codigo} idiomas={idiomas} />
@@ -47,7 +40,7 @@ const Page = () => {
 
             <BlockContent content={contentVagas} />
 
-            <BlockContent content={contentCurriculos} />
+            <CurriculosList curriculos={curriculos} filtros={filtros} vagas={vagas} cargos={cargos} />
         </AdminLayout>
     );
 };
