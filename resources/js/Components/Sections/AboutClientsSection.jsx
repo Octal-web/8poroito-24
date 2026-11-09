@@ -32,7 +32,7 @@ export function AboutClientsSection({ clientes }) {
     }, []);
 
     return (
-        <section className="relative bg-black pt-10 pb-30 overflow-hidden">
+        <section className="relative bg-black pt-10 md:pb-30 overflow-hidden">
             {/* <div className="absolute top-[-400px] left-[-500px] rotate-[30deg] scale-50 md:scale-75 xl:scale-100 w-[700px] opacity-50">
                 <EightEffect />
             </div>
