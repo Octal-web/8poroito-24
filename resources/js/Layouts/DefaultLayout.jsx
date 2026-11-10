@@ -92,7 +92,7 @@ const DefaultLayout = ({ children }) => {
                 const noscript = document.createElement('noscript');
                 noscript.innerHTML = `
                     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5347TVB" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-                    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=114067279044838&ev=PageView&noscript=1" alt="" />
+                    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1301495155451803&ev=PageView&noscript=1" alt="" />
                 `;
                 document.body.appendChild(noscript);
             }
