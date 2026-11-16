@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 class ContatoController extends Controller
 {
     public function index() {
-        return Inertia::render('Contato/index');
+        return Inertia::render('Contato/index', [
+            'googleMapsApiKey' => config('services.google_maps.key'),
+        ]);
     }
 
     /**
@@ -41,14 +43,22 @@ class ContatoController extends Controller
                 $data['nome'] = $request->nome;
                 $data['email'] = $request->email;
                 $data['telefone'] = $request->telefone;
-                $data['empresa'] = $request->empresa . ' - ' . $request->cargo;
+                $data['empresa'] = $request->empresa;
+                $data['cargo'] = $request->cargo;
+                $data['mensagem'] = $request->mensagem;
+                $data['proposta'] = (bool) $contato->proposta;
 
-                // Mail::send('emails.curriculum', $data, function($message)use($data) {
-                //     $message->from('site@8poroito.com.br')
-                //             // ->to('trabalheconosco@8poroito.com.br')
-                //             ->to('rafael@8poroito.com.br')
-                //             ->subject('Obrigado por entrar em contato!');
-                // });
+                // O contato já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
+                try {
+                    Mail::send('emails.contact', $data, function($message) use ($data) {
+                        $message->from('site@8poroito.com.br')
+                                ->to('atendimento@8poroito.com.br')
+                                ->replyTo($data['email'], $data['nome'])
+                                ->subject('Um novo contato veio através do site' . ($data['proposta'] ? ' (solicitou proposta)' : ''));
+                    });
+                } catch (\Throwable $e) {
+                    report($e);
+                }
 
                 return Inertia::location(route('Contato.concluido', [
                     'token' => $token
@@ -73,14 +83,17 @@ class ContatoController extends Controller
             ])
             ->first();
 
+        // Token inválido ou já usado (ex.: usuário atualizou a página): a página de obrigado não é de acesso livre.
         if (!$contato) {
-            return Inertia::location(route('Contato.index'));
+            return redirect()->route('Home.index');
         }
 
         $contato->token = null;
 
         $response = $contato->save();
 
-        return Inertia::render('Contato/concluido');
+        return Inertia::render('Contato/concluido', [
+            'proposta' => (bool) $contato->proposta,
+        ]);
     }
 };

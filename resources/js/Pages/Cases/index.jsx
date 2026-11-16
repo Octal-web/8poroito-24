@@ -6,11 +6,11 @@ import { CasesGridSection } from '../../Components/Sections/CasesGridSection';
 import { CasesProposalSection } from '../../Components/Sections/CasesProposalSection';
 
 const Page = () => {
-    const { casesClientes } = usePage().props;
+    const { conteudos, casesClientes } = usePage().props;
 
     return (
         <DefaultLayout>
-            <CasesHeroSection />
+            <CasesHeroSection content={conteudos[0]} />
             <CasesGridSection casesClientes={casesClientes} />
             <CasesProposalSection />
         </DefaultLayout>

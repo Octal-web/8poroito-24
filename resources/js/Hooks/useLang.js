@@ -22,6 +22,16 @@ const translations = {
             `Sorry, you are forbidden from accessing this page: <strong>${url}</strong>.`,
         back: "Back",
     },
+    es: {
+        marca: "8poroito",
+        503: "Lo sentimos, estamos realizando tareas de mantenimiento. Por favor, vuelve a visitarnos pronto.",
+        500: "Oops, algo ha fallado en nuestros servidores.",
+        404: (url) =>
+            `Lo sentimos, la página que buscas "<strong>${url}</strong>" no se pudo encontrar.`,
+        403: (url) =>
+            `Lo sentimos, tienes prohibido acceder a esta página: <strong>${url}</strong>.`,
+        back: "De vuelta",
+    },
 };
 
 export function useLang() {

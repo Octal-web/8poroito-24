@@ -1,14 +1,18 @@
 import React, { useEffect, useRef } from "react";
 
-export const Map = () => {
+export const Map = ({ apiKey }) => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
     const geocoderRef = useRef(null);
 
     useEffect(() => {
+        if (!apiKey) {
+            console.warn("[Map] googleMapsApiKey ausente: defina GOOGLE_MAPS_API_KEY no .env do servidor.");
+            return;
+        }
+
         const script = document.createElement("script");
-        script.src =
-            "https://cdn.jsdelivr.net/gh/somanchiu/Keyless-Google-Maps-API@v6.8/mapsJavaScriptAPI.js";
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&callback=initMap&v=weekly`;
         script.async = true;
         script.defer = true;
 
@@ -194,7 +198,7 @@ export const Map = () => {
                         animation: window.google.maps.Animation.DROP,
                         visible: true,
                         icon: {
-                            url: "site/img/location-pin.png",
+                            url: "/site/img/location-pin.png",
                             labelOrigin: new window.google.maps.Point(25, 90),
                         },
                         label: {
@@ -215,14 +219,20 @@ export const Map = () => {
                 );
             }
         };
+        // The API is already loaded (e.g. returning to the page via Inertia): just init.
+        if (window.google?.maps) {
+            window.initMap();
+            return;
+        }
+
         document.head.appendChild(script);
 
         return () => {
-            if (script) {
-                document.head.removeChild(script);
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
             }
         };
-    }, []);
+    }, [apiKey]);
 
     return <div ref={mapRef} style={{ width: "100%", height: "400px" }} />;
 };

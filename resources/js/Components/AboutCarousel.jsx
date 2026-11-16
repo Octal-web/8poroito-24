@@ -1,104 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import Slider from "react-slick";
+import React from 'react';
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+export const AboutCarousel = ({ reverse = false, text = 'O poder da marca', duration = 60, repeat = 3 }) => {
+    const items = Array.from({ length: repeat });
 
-export const AboutCarousel = ({ reverse = false, text = 'string', ...props }) => {
-    const settings = {
-        dots: false,
-        infinite: true,
-        speed: 80000,
-        slidesToShow: 0.537,
-        autoplay: true,
-        autoplaySpeed: 0,
-        cssEase: "linear",
-        draggable: false,
-        rtl: reverse,
-        responsive: [
-            {
-                breakpoint: 1750,
-                settings: {
-                    slidesToShow: 0.47,
-                }
-            },
-            {
-                breakpoint: 1536,
-                settings: {
-                    slidesToShow: 0.43,
-                }
-            },
-            {
-                breakpoint: 1366,
-                settings: {
-                    slidesToShow: 0.388,
-                }
-            },
-            {
-                breakpoint: 1279,
-                settings: {
-                    slidesToShow: 0.363,
-                }
-            },
-            {
-                breakpoint: 1023,
-                settings: {
-                    slidesToShow: 0.432,
-                    speed: 70000,
-                }
-            },
-            {
-                breakpoint: 920,
-                settings: {
-                    slidesToShow: 0.515,
-                }
-            },
-            {
-                breakpoint: 767,
-                settings: {
-                    slidesToShow: 0.65,
-                }
-            },
-            {
-                breakpoint: 620,
-                settings: {
-                    slidesToShow: 0.512,
-                }
-            },
-            {
-                breakpoint: 460,
-                settings: {
-                    slidesToShow: 0.345,
-                    speed: 60000,
-                }
-            },
-            {
-                breakpoint: 400,
-                settings: {
-                    slidesToShow: 0.331,
-                    speed: 60000,
-                }
-            },
-        ]
-    };
+    const renderGroup = (groupIndex) => (
+        <div className="flex shrink-0" aria-hidden={groupIndex > 0}>
+            {items.map((_, index) => (
+                <span
+                    key={index}
+                    className="shrink-0 pr-[0.6em] opacity-15 font-semibold text-center text-[60px] md:text-[100px] lg:text-[140px] xl:text-[160px] 2xl:text-[180px] text-primary uppercase whitespace-nowrap leading-[1.1] tracking-[17%] text-white"
+                >
+                    {text}
+                </span>
+            ))}
+        </div>
+    );
 
     return (
-        <Slider {...settings} className="w-full">
-            <div>
-                <h1 className="opacity-15 font-secondary text-[100px] md:text-[150px] lg:text-[200px] xl:text-[250px] 2xl:text-[300px] text-white uppercase whitespace-nowrap leading-[11rem] lg:leading-[17rem] xl:leading-[19rem] 2xl:leading-[22rem]">
-                    {text}
-                </h1>
+        <div className="w-full overflow-hidden">
+            <div
+                className="flex gap-10 w-max animate-marquee my-10"
+                style={{ animationDuration: `${duration}s`, animationDirection: reverse ? 'reverse' : 'normal' }}
+            >
+                {renderGroup(0)}
+                {renderGroup(1)}
             </div>
-            <div>
-                <h1 className="opacity-15 font-secondary text-[100px] md:text-[150px] lg:text-[200px] xl:text-[250px] 2xl:text-[300px] text-white uppercase whitespace-nowrap leading-[11rem] lg:leading-[17rem] xl:leading-[19rem] 2xl:leading-[22rem]">
-                    {text}
-                </h1>
-            </div>
-            <div>
-                <h1 className="opacity-15 font-secondary text-[100px] md:text-[150px] lg:text-[200px] xl:text-[250px] 2xl:text-[300px] text-white uppercase whitespace-nowrap leading-[11rem] lg:leading-[17rem] xl:leading-[19rem] 2xl:leading-[22rem]">
-                    {text}
-                </h1>
-            </div>
-        </Slider>
+        </div>
     );
 };

@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 const CustomPrevArrow = ({ onClick }) => (
     <div
-        className="custom-arrow absolute left-[20%] -bottom-[32px] 2xl:-bottom-[49px] cursor-pointer z-[1] transform scale-75 md:scale-100"
+        className="custom-arrow absolute left-2 md:left-[20%] -bottom-[32px] 2xl:-bottom-[49px] cursor-pointer z-[1] transform scale-75 md:scale-100"
         onClick={onClick}
     >  
         <img src={`/site/img/carousel-arrow.svg`} alt="Previous" className="transform rotate-180" />
@@ -15,7 +15,7 @@ const CustomPrevArrow = ({ onClick }) => (
 
 const CustomNextArrow = ({ onClick }) => (
     <div
-        className="custom-arrow absolute right-[20%] -bottom-[32px] 2xl:-bottom-[49px] cursor-pointer z-[1] transform scale-75 md:scale-100"
+        className="custom-arrow absolute right-2 md:right-[20%] -bottom-[32px] 2xl:-bottom-[49px] cursor-pointer z-[1] transform scale-75 md:scale-100"
         onClick={onClick}
     >  
         <img src={`/site/img/carousel-arrow.svg`} alt="Next" />
@@ -47,7 +47,7 @@ export const AboutOitoCarousel = ({ data }) => {
             {data.map((imagem, index) => (
                 <div key={index}>
                     <div className="relative block mx-8 sm:mx-20 md:mx-15 xl:mx-24 2xl:mx-30 mt-30 xs:mb-30">
-                        <img src={`content/images/${imagem.imagem}`} className="carousel-image w-full mb-10 transition-all" />
+                        <img src={imagem.imagem} alt="Espaço da 8poroito" loading="lazy" decoding="async" className="carousel-image w-full aspect-square object-cover mb-10 transition-all" />
                         <div className="carousel-shadow absolute top-0 left-0 w-full h-full bg-black opacity-50 transition-all"></div>
                     </div>
                 </div>

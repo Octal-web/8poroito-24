@@ -51,7 +51,7 @@ class InstitucionalController extends Controller
             ->map(function($imagem) {
                 return [
                     'id' => $imagem->id,
-                    'imagem' => $imagem->imagem,
+                    'imagem' => asset('/content/images/' . $imagem->imagem),
                 ];
         });
 

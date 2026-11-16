@@ -90,7 +90,7 @@ const Page = () => {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-black dark:text-white">Impressões e Cliques por idade</h3>
+                        <h3 className="text-xl font-bold text-black">Impressões e Cliques por idade</h3>
                     </div>
 
                     <div className="mt-10">
@@ -110,7 +110,7 @@ const Page = () => {
 
                 <div className="mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-black dark:text-white">Impressões e Cliques por cidade</h3>
+                        <h3 className="text-xl font-bold text-black">Impressões e Cliques por cidade</h3>
                     </div>
 
                     <div className="mt-10">
@@ -132,7 +132,7 @@ const Page = () => {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-black dark:text-white">Acessos por gênero</h3>
+                        <h3 className="text-xl font-bold text-black">Acessos por gênero</h3>
                     </div>
 
                     <div className="mt-10">

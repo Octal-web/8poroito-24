@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PostCareerRequest extends FormRequest
 {
@@ -36,7 +37,12 @@ class PostCareerRequest extends FormRequest
             ],
             'apresentacao'  => 'required',
             'projetos'  => 'required',
-            'cargo' => 'required',
+            'vaga' => [
+                'nullable',
+                'integer',
+                Rule::exists('vagas', 'id')->where(fn ($query) => $query->where('visivel', true)->whereNull('excluido')),
+            ],
+            'cargo' => 'required_without:vaga',
             'politica' => 'required|accepted',
             'veracidade' => 'required|accepted',
         ];
@@ -64,7 +70,9 @@ class PostCareerRequest extends FormRequest
             'redesSociais.*.link.url' => 'Por favor, insira um link de rede social válido.',
             'pretensao.required' => 'Por favor, informe sua pretensão salarial.',
             'pretensao.regex' => 'Por favor, informe um valor monetário válido.',
-            'cargo.required' => 'Por favor, escolha uma vaga para se candidatar.',
+            'cargo.required_without' => 'Por favor, escolha uma vaga para se candidatar.',
+            'vaga.integer' => 'Esta vaga não está mais disponível.',
+            'vaga.exists' => 'Esta vaga não está mais disponível.',
             'apresentacao.required'  => 'Por favor, informe sua apresentação.',
             'projetos.required'  => 'Por favor, informe algum projeto.',
             'politica.required' => 'Para continuar, você deve concordar com a LGPD.',

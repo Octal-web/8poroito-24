@@ -25,9 +25,6 @@ const Page = () => {
             { titulo: 'Destaque?', name: 'destaque', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8 lg:col-span-2', tipo: 'check'}
         ],
         [
-            { titulo: 'Slug', name: 'slug', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8', tipo: 'texto', max: 255 },
-        ],
-        [
             { titulo: 'Campanha', name: 'campanha', tamanho: 'col-span-12 sm:col-span-10 md:col-span-8', tipo: 'texto', max: 255 },
         ],
         [

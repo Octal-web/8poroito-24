@@ -51,7 +51,7 @@ export const InputSelect = ({ title, name, value, idioma, onChange, options, isM
                 <label className="block font-bold text-gray-500">{title}</label>
             </div>
             <Select
-                styles={customStyles}
+                classNamePrefix="admin-select"
                 options={options}
                 value={selectedOption}
                 onChange={handleChange}

@@ -18,10 +18,6 @@ p + p {
 	transition: background 10s ease;
 }
 
-.videoPlay .playBtn {
-	opacity: 0;
-}
-.videoPlay:hover .playBtn,
 .videoPause .playBtn {
 	opacity: 0.7;
 }
@@ -155,6 +151,14 @@ form .react-select__value-container {
 	100% { transform: scale(1); }
 }
 
+.animate-marquee {
+	animation: marquee 60s linear infinite;
+}
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
 @media (max-width: 768px) {
     .project-item::after {
     	@apply bg-black w-full opacity-25;
@@ -225,4 +229,22 @@ table .sortable-fallback {
                       linear-gradient(-45deg, transparent 75%, #ccc 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+form .admin-select__control {
+    @apply rounded-lg !border-gray-300 border-opacity-100 bg-transparent p-1 font-normal text-sm text-black outline-none transition hover:ring-0 !shadow-none disabled:cursor-default;
+}
+form .admin-select__control--is-focused,
+form .admin-select__hidden__control--is-focused {
+    @apply !border-black focus:border-black;
+}
+form .admin-select__indicator-separator,
+form .admin-select__hidden__indicator-separator {
+    @apply hidden;
+}
+form .admin-select__option {
+    @apply text-sm;
+}
+form .admin-select__input:focus {
+    @apply ring-0;
 }

@@ -1,12 +1,14 @@
 import React from 'react';
 
-export const HomeBrand = ({ src = '', ...props }) => {
+export const HomeBrand = ({ src = '', name = '', ...props }) => {
     return (
-        <div className="relative block overflow-hidden w-full transform scale-75 lg:scale-100">
+        <div className="relative block w-full transform scale-75 lg:scale-90">
             <img
                 src={`/content/clients/thumbs/${src}`}
-                alt="Logo da marca"
-                className="mx-auto my-auto max-h-full transition duration-300 transform hover:scale-105"                
+                alt={name ? `Logo ${name}` : 'Logo da marca'}
+                loading="lazy"
+                decoding="async"
+                className="mx-auto my-auto h-full max-h-24 object-contain transition duration-300 transform hover:scale-105"                
             />
         </div>
     );

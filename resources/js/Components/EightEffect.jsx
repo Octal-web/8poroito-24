@@ -32,7 +32,7 @@ export const EightEffect = () => {
 
     return (
         <div className="eight__effect">
-                <img ref={eightRef} src={`/site/img/eight-effect.png`} className="w-full" />
+                <img ref={eightRef} src={`/site/img/eight-effect.png`} alt="" className="w-full" />
         </div>
     );
 };

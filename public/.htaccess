@@ -1,3 +1,19 @@
+# Cache de arquivos estáticos
+<IfModule mod_headers.c>
+    # Assets do Vite têm hash no nome: podem ficar em cache "para sempre".
+    <If "%{REQUEST_URI} =~ m#^/build/#">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+    # Imagens, vídeos e fontes do site e do conteúdo do Manager.
+    <ElseIf "%{REQUEST_URI} =~ m#\.(?:jpe?g|png|gif|webp|avif|svg|ico|mp4|webm|woff2?)$#i">
+        Header set Cache-Control "public, max-age=2592000"
+    </ElseIf>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

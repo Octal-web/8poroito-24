@@ -57,7 +57,7 @@ export const CaseOthersCarousel = ({ data }) => {
             {data.map((imagem, index) => (
             <div key={imagem.id ?? imagem.slug}>
                 <Link href={route('Cases.caseCliente', {slug: imagem.slug})} className="relative block mx-2">
-                    <img src={`/content/cases/thumbs/${imagem.imagem}`} className="carousel-image w-full transition-all" />
+                    <img src={`/content/cases/thumbs/${imagem.imagem}`} alt={`Case ${imagem.titulo}`} loading="lazy" decoding="async" className="carousel-image w-full transition-all" />
                 </Link>
             </div>
             ))}

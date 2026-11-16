@@ -227,36 +227,38 @@ export const BlockContent = ({ content }) => {
                     </thead>
                     {content.editavel ? (
                         <ReactSortable
-                            animation={150}
-                            list={visibleItems}
-                            setList={setVisibleItems}
-                            forceFallback={true}
                             tag="tbody"
+                            animation={150}
+                            list={state}
+                            setList={setState}
+                            forceFallback={true}
                         >
-                            {visibleItems.map((conteudo, index) => (
+                            {state.map((conteudo, index) => (
+                                <IndividualItem
+                                    key={conteudo.id}
+                                    individualContent={conteudo}
+                                    imagensPath={content.imagensPath}
+                                    imagensClass={content.imgClass}
+                                    controller={content.controller}
+                                    index={index}
+                                    edit={content.editavel}
+                                />
+                            ))}
+                        </ReactSortable>
+                    ) : (
+                        <tbody>
+                            {state.map((conteudo, index) => (
                                 <IndividualItem 
                                     key={conteudo.id}
                                     individualContent={conteudo}
                                     imagensPath={content.imagensPath}
                                     imagensClass={content.imgClass}
                                     controller={content.controller}
-                                    index={startIndex + index}
+                                    index={index}
                                     edit={content.editavel}
                                 />
                             ))}
-                        </ReactSortable>
-                    ) : (
-                        visibleItems.map((conteudo, index) => (
-                            <IndividualItem 
-                                key={conteudo.id}
-                                individualContent={conteudo}
-                                imagensPath={content.imagensPath}
-                                imagensClass={content.imgClass}
-                                controller={content.controller}
-                                index={startIndex + index}
-                                edit={content.editavel}
-                            />
-                        ))
+                        </tbody>
                     )}
                 </table>
             </div>

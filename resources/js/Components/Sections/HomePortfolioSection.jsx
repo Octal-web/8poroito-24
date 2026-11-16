@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { HomePortfolio } from '../HomePortfolio';
-import { HomeNews } from '../HomeNews';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,7 +57,7 @@ export function HomePortfolioSection({ conteudos, portfolios }) {
     }, []);
 
     return (
-        <section className="relative my-10 overflow-hidden" id="portfolio">
+        <section className="relative mt-10 overflow-hidden" id="portfolio">
             <div className="relative container max-w-[90%]">
                 <div className="absolute top-0 left-0 w-full h-full">
                     <div className="grid-cols-2 grid gap-x-4 gap-y-20 lg:gap-y-4">
@@ -72,28 +71,32 @@ export function HomePortfolioSection({ conteudos, portfolios }) {
                     <div className="pt-10 md:pt-[20%] max-w-md mx-auto">
                         {portfolioText.map((parte, index) => (
                             <div key={index} className="overflow-hidden">
-                                <h2 ref={portfolioRef.current[index]} className="font-secondary text-center text-6xl md:text-8xl">{parte.trim()}</h2>
+                                <h2 ref={portfolioRef.current[index]} className="text-center text-4xl sm:text-5xl md:text-6xl font-semibold !leading-tight uppercase">{parte.trim()}</h2>
                             </div>
                         ))}
                     </div>
 
-                    <div className="max-w-md mx-auto my-20 md:my-50">
-                        <img src="/site/img/behanceLogo.png" className="mx-auto mb-10" />
-                        <div className="md:text-xl text-center font-light mb-20">
+                    <div className="max-w-md mx-auto my-20 md:mt-40 md:mb-30 2xl:mt-50 2xl:mb-40">
+                        <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-10" role="img" aria-label="Instagram">
+                            <rect x="3" y="3" width="18" height="18" rx="5" />
+                            <circle cx="12" cy="12" r="4" />
+                            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                        </svg>
+                        <div className="md:text-xl text-center font-light text-balance mb-20">
                             <p>{conteudos[1].texto}</p>
                         </div>
-                        <a href="https://www.behance.net/agencia8poroito" className="block w-48 border border-primary border-2 text-center h-16 h-16 leading-[4rem] font-light uppercase mx-auto" target="_blank">Siga nos</a>
+                        <a href="https://www.instagram.com/8poroito/" className="block w-48 border border-primary border-2 text-center h-16 h-16 leading-[4rem] font-light uppercase mx-auto" target="_blank" rel="noopener noreferrer">Siga nos</a>
                     </div>
 
-                    <div className="max-w-3xl mx-auto mb-20">
-                        <img src="/site/img/mail.png" className="mx-auto mb-2" />
-                        <h3 className="font-secondary text-center text-4xl mb-5">Quero ficar por dentro</h3>
+                    {/* <div className="max-w-3xl mx-auto mb-20">
+                        <img src="/site/img/mail.png" alt="" className="mx-auto mb-2" />
+                        <h3 className="text-center text-4xl mb-5">Quero ficar por dentro</h3>
                         <div className="max-w-md mx-auto text-center font-light mb-9">
                             <p>Cadastre-se para receber noticias e atualização mais recentes de tudo que pode impactar os seu negócio.</p>
                         </div>
 
                         <HomeNews />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </section>

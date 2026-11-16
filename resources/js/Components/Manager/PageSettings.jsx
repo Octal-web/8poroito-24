@@ -90,7 +90,7 @@ export const PageSettings = ({ page, idioma }) => {
         <div className="mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-xl font-bold text-black dark:text-white">Configurações da Página</h3>
+                    <h3 className="text-xl font-bold text-black">Configurações da Página</h3>
                     <span className="text-sm text-slate-400">Utilize essa seção se você possui conhecimentos sobre SEO.</span>
                 </div>
                 

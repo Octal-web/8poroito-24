@@ -30,23 +30,17 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->respond(function (
-            Response $response,
-            Throwable $exception,
-            Request $request
-        ) {
-            $status = $response->getStatusCode();
-
+        $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
             if (
-                !config('app.debug') &&
-                in_array($status, [403, 404, 500, 503])
+                !app()->environment(['local']) &&
+                in_array($response->getStatusCode(), [403, 404, 500, 503])
             ) {
                 return Inertia::render('Erro/index', [
-                    'status' => $status,
-                    'language' => app()->getLocale(),
+                    'status' => $response->getStatusCode(),
+                    'language' => App::getLocale(),
                 ])
                     ->toResponse($request)
-                    ->setStatusCode($status);
+                    ->setStatusCode($response->getStatusCode());
             }
 
             return $response;

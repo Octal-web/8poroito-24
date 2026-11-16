@@ -76,9 +76,21 @@ export const ImageUploader = ({ onUpload, crop, size, uploadStatus }) => {
 
         const processedImages = await Promise.all(
             acceptedFiles.map(async (file) => {
-                const { blob, originalFile } = await resizeAndCropImage(file);
-                return crop ? { original: originalFile } : { resized: blob, original: originalFile };
+                const processed = await resizeAndCropImage(file);
+                if (!processed) return null;
+
+                const { blob, originalFile } = processed;
+
+                const resized = new File([blob], originalFile.name, { type: 'image/jpeg' });
+
+                return { resized, original: originalFile };
             })
+        );
+
+        setQueue((prev) =>
+            prev.map((item) =>
+                newQueueItems.some((n) => n.id === item.id) ? { ...item, status: 'enviando' } : item
+            )
         );
 
         setQueue((prev) =>

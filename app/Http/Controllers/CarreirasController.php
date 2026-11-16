@@ -8,13 +8,116 @@ use Inertia\Inertia;
 
 use App\Models\Curriculo;
 use App\Models\RedeSocial;
+use App\Models\Vaga;
+use App\Models\Imagem;
+
+use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Mail;
 
 class CarreirasController extends Controller
 {
     public function index() {
-        return Inertia::render('Carreiras/index');
+
+        $idioma = view()->shared('idioma');
+
+        $vagas = Vaga::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true
+            ])
+            ->whereHas('vagasIdiomas')
+            ->with([
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma)
+                        ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
+                },
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->filter(fn ($vaga) => $vaga->vagasIdiomas->isNotEmpty())
+            ->map(function($vaga) {
+                return [
+                    'id' => $vaga->id,
+                    'titulo' => $vaga->vagasIdiomas[0]->titulo,
+                    'tipo' => $vaga->vagasIdiomas[0]->tipo,
+                    'slug' => Str::slug($vaga->vagasIdiomas[0]->titulo),
+                ];
+            })
+            ->values();
+
+        $imagensGaleria = Imagem::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true,
+                'controladora' => 'Carreiras',
+                'acao' => 'index'
+            ])
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->limit(4)
+            ->get()
+            ->map(function($imagem) {
+                return [
+                    'id' => $imagem->id,
+                    'imagem' => asset('/content/images/' . $imagem->imagem),
+                ];
+        });
+
+        return Inertia::render('Carreiras/index', [
+            'vagas' => $vagas,
+            'imagensGaleria' => $imagensGaleria
+        ]);
+    }
+
+    public function vaga($id, $slug = null) {
+
+        $idioma = view()->shared('idioma');
+
+        $vaga = Vaga::query()
+            ->where([
+                'excluido' => NULL,
+                'visivel' => true,
+                'id' => $id
+            ])
+            ->with([
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma)
+                        ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
+                },
+            ])
+            ->first();
+
+        if (!$vaga || $vaga->vagasIdiomas->isEmpty()) {
+            return Inertia::location(route('Carreiras.index'));
+        }
+
+        $vagaIdioma = $vaga->vagasIdiomas[0];
+
+        $pagina = inertia()->getShared('pagina');
+        $descricao = Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($vagaIdioma->descricao)))), 155);
+
+        $pagina['titulo'] = $vagaIdioma->titulo . ' | Carreiras | 8poroito';
+        $pagina['descricao'] = $descricao;
+        $pagina['tituloCompartilhamento'] = $vagaIdioma->titulo . ' | Carreiras | 8poroito';
+        $pagina['descricaoCompartilhamento'] = $descricao;
+
+        return Inertia::render('Carreiras/vaga', [
+            'pagina' => $pagina,
+            'vaga' => [
+                'id' => $vaga->id,
+                'titulo' => $vagaIdioma->titulo,
+                'tipo' => $vagaIdioma->tipo,
+                'descricao' => $vagaIdioma->descricao,
+            ],
+        ]);
     }
 
     /**
@@ -34,7 +137,8 @@ class CarreirasController extends Controller
                 $curriculo->arquivo = md5(uniqid((string) rand(), true)) . '.' . strtolower($request->file('arq')->extension());
             }
 
-            $curriculo->cargo_id = $request->cargo;
+            $curriculo->cargo_id = $request->cargo ?: null;
+            $curriculo->vaga_id = $request->vaga ?: null;
             $curriculo->pretensao = $request->pretensao;
             $curriculo->apresentacao = $request->apresentacao;
             $curriculo->projetos = $request->projetos;
@@ -51,7 +155,7 @@ class CarreirasController extends Controller
                     'linkedin' => 'Linkedin',
                 ];
 
-                foreach ($request->input('redesSociais') as $key => $value) {
+                foreach ($request->input('redesSociais') as $value) {
                     $rede_social = new RedeSocial;
                     $rede_social->tipo = $redes_sociais[$value['tipo']['value']] ?? $value['tipo']['value'];
                     $rede_social->link = $value['link'];
@@ -65,22 +169,45 @@ class CarreirasController extends Controller
                     $request->file('arq')->move(public_path('content/resumes/'), $curriculo->arquivo);
                 }
 
+                $curriculo->load([
+                    'cargo:id,nome',
+                    'vaga.vagasIdiomas' => function ($q) {
+                        $q->whereHas('idiomas', function ($r) {
+                            $r->where('padrao', true);
+                        });
+                    },
+                    'redes_sociais',
+                ]);
+
                 $data['nome'] = $request->nome;
                 $data['whatsapp'] = $request->whatsapp;
                 $data['email'] = $request->email;
+                $data['vaga'] = $curriculo->vaga && $curriculo->vaga->vagasIdiomas->isNotEmpty() ? $curriculo->vaga->vagasIdiomas[0]->titulo : null;
+                $data['cargo'] = $curriculo->cargo ? $curriculo->cargo->nome : null;
+                $data['pretensao'] = $request->pretensao;
                 $data['apresentacao'] = $request->apresentacao;
+                $data['projetos'] = $request->projetos;
+                $data['redesSociais'] = $curriculo->redes_sociais->map(fn ($rede) => ['tipo' => $rede->tipo, 'link' => $rede->link])->all();
                 $data['curriculo'] = $curriculo->arquivo ? $curriculo->arquivo : null;
 
-                Mail::send('emails.curriculum', $data, function($message)use($data) {
-                    $message->from('site@8poroito.com.br')
-                            ->to('trabalheconosco@8poroito.com.br')
-                            ->to('rafael@8poroito.com.br')
-                            ->subject('Um novo currículo foi enviado através da página de recrutamento!');
+                // O currículo já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
+                try {
+                    Mail::send('emails.curriculum', $data, function($message) use ($data) {
+                        $message->from('site@8poroito.com.br')
+                                ->to('trabalheconosco@8poroito.com.br')
+                                ->bcc('rafael@8poroito.com.br')
+                                ->replyTo($data['email'], $data['nome'])
+                                ->subject($data['vaga']
+                                    ? 'Um novo currículo veio através do site - Vaga: ' . $data['vaga']
+                                    : 'Um novo currículo veio através do site');
 
-                    if ($request->file('arq')) {
-                        $message->attach(public_path('content/resumes/' . $data['curriculo']));
-                    }
-                });
+                        if ($data['curriculo']) {
+                            $message->attach(public_path('content/resumes/' . $data['curriculo']));
+                        }
+                    });
+                } catch (\Throwable $e) {
+                    report($e);
+                }
 
                 return Inertia::location(route('Carreiras.concluido', [
                     'token' => $token
@@ -105,8 +232,9 @@ class CarreirasController extends Controller
             ])
             ->first();
 
+        // Token inválido ou já usado (ex.: usuário atualizou a página): a página de obrigado não é de acesso livre.
         if (!$curriculo) {
-            return Inertia::location(route('Carreiras.index'));
+            return redirect()->route('Home.index');
         }
 
         $curriculo->token = null;

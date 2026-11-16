@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Manager;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 class PostCaseRequest extends FormRequest
 {
@@ -13,24 +11,10 @@ class PostCaseRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        if (is_string($this->input('slug'))) {
-            $this->merge(['slug' => Str::slug($this->input('slug'))]);
-        }
-    }
-
     public function rules()
-    {  
+    {
         return [
             'titulo' => 'required|max:120',
-            'slug' => [
-                'required',
-                'string',
-                'max:255',
-                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
-                Rule::unique('cases_clientes', 'slug')->ignore((int) $this->route('id')),
-            ],
             'campanha' => 'required|string|max:255',
             'destaque' => 'boolean',
             'ano' => 'nullable|integer|between:1000,9999',
@@ -57,12 +41,6 @@ class PostCaseRequest extends FormRequest
     public function messages()
     {
         return [
-            'slug.required' => 'Por favor, informe o slug.',
-            'slug.string' => 'O slug deve ser um texto.',
-            'slug.max' => 'O slug não pode exceder 255 caracteres.',
-            'slug.regex' => 'O slug deve conter apenas letras minúsculas, números e hífens.',
-            'slug.unique' => 'Este slug já está sendo usado por outro case.',
-
             'titulo.required' => 'Por favor, informe o título.',
             'titulo.max' => 'O título não pode exceder 120 caracteres.',
 

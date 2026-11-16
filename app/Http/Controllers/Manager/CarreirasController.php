@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cargo;
 use App\Models\Curriculo;
 use App\Models\Idioma;
+use App\Models\Vaga;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,42 +15,92 @@ use Illuminate\Support\Str;
 
 class CarreirasController extends Controller
 {
+    const CURRICULOS_POR_PAGINA = 20;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        $curriculos = Curriculo::query()
+    public function index(Request $request) {
+        $idioma = inertia()->getShared('idioma');
+
+        $vagas = Vaga::query()
             ->where([
-                'excluido' => NULL
+                'excluido' => null
             ])
             ->with([
-                'cargo' => function ($q)  {
-                    $q->where([
-                        'excluido' => NULL,
-                        'visivel' => true
-                    ]);
-                },
-                'redes_sociais' => function ($q)  {
-                    $q->where([
-                        'excluido' => NULL
-                    ]);
+                'vagasIdiomas' => function ($q) use ($idioma) {
+                    $q->whereHas('idiomas', function ($r) use ($idioma) {
+                        $r->where('codigo', $idioma->codigo)
+                            ->orWhere('padrao', true);
+                    })
+                    ->orderBy('idioma_id', 'DESC');
                 }
             ])
-            ->orderBy('criado', 'ASC')
+            ->orderBy('ordem', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($curriculo) {
+            ->map(function ($vaga) {
+                return [
+                    'id' => $vaga->id,
+                    'visivel' => $vaga->visivel ? true : false,
+                    'titulo' => $vaga->vagasIdiomas->isNotEmpty() ? $vaga->vagasIdiomas[0]->titulo : null,
+                ];
+            });
+
+        $cargos = Cargo::query()
+            ->whereNull('excluido')
+            ->orderBy('ordem', 'ASC')
+            ->orderBy('nome', 'ASC')
+            ->get(['id', 'nome']);
+
+        $filtros = [
+            'busca' => trim((string) $request->query('busca', '')),
+            'vaga' => (string) $request->query('vaga', ''),
+            'cargo' => (string) $request->query('cargo', ''),
+        ];
+
+        $curriculos = Curriculo::query()
+            ->whereNull('excluido')
+            ->when($filtros['busca'] !== '', function ($q) use ($filtros) {
+                $termo = '%' . $filtros['busca'] . '%';
+                $q->where(function ($r) use ($termo) {
+                    $r->where('nome', 'like', $termo)
+                        ->orWhere('email', 'like', $termo);
+                });
+            })
+            ->when($filtros['vaga'] === 'banco', fn ($q) => $q->whereNull('vaga_id'))
+            ->when(ctype_digit($filtros['vaga']), fn ($q) => $q->where('vaga_id', $filtros['vaga']))
+            ->when(ctype_digit($filtros['cargo']), fn ($q) => $q->where('cargo_id', $filtros['cargo']))
+            ->with([
+                'cargo:id,nome',
+                'vaga.vagasIdiomas' => function ($q) {
+                    $q->whereHas('idiomas', function ($r) {
+                        $r->where('padrao', true);
+                    });
+                }
+            ])
+            ->orderBy('criado', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->paginate(self::CURRICULOS_POR_PAGINA)
+            ->withQueryString()
+            ->through(function ($curriculo) {
                 return [
                     'id' => $curriculo->id,
                     'nome' => $curriculo->nome,
-                    'data' => $curriculo->criado->format('d/m/Y'),
+                    'email' => $curriculo->email,
+                    'cargo' => $curriculo->cargo ? $curriculo->cargo->nome : null,
+                    'vaga' => $curriculo->vaga && $curriculo->vaga->vagasIdiomas->isNotEmpty() ? $curriculo->vaga->vagasIdiomas[0]->titulo : null,
+                    'data' => $curriculo->criado->format('d/m/Y H:i'),
                 ];
             });
 
         return Inertia::render('Manager/Carreiras/index', [
-            'curriculos' => $curriculos
+            'vagas' => $vagas,
+            'cargos' => $cargos,
+            'curriculos' => $curriculos,
+            'filtros' => $filtros,
         ]);
     }
 
@@ -73,6 +125,11 @@ class CarreirasController extends Controller
                     $q->where([
                         'excluido' => NULL
                     ]);
+                },
+                'vaga.vagasIdiomas' => function ($q) {
+                    $q->whereHas('idiomas', function ($r) {
+                        $r->where('padrao', true);
+                    });
                 }
             ])
             ->first();
@@ -87,7 +144,8 @@ class CarreirasController extends Controller
             'email' => $curriculo->email,
             'whatsapp' => $curriculo->whatsapp,
             'pretensao' => $curriculo->pretensao,
-            'cargo' => $curriculo->cargo->nome,
+            'cargo' => $curriculo->cargo ? $curriculo->cargo->nome : null,
+            'vaga' => $curriculo->vaga && $curriculo->vaga->vagasIdiomas->isNotEmpty() ? $curriculo->vaga->vagasIdiomas[0]->titulo : null,
             'apresentacao' => $curriculo->apresentacao,
             'projetos' => $curriculo->projetos,
             'data' => $curriculo->criado->format('d/m/Y H:i'),

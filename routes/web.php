@@ -12,6 +12,7 @@ use App\Http\Controllers\ContatoController;
 use App\Http\Controllers\PoliticasController;
 
 use App\Http\Controllers\Manager\UsuariosController;
+use App\Http\Controllers\Manager\PaginasController as ManagerPaginasController;
 use App\Http\Controllers\Manager\ConteudosController as ManagerConteudosController;
 use App\Http\Controllers\Manager\ImagensController as ManagerImagensController;
 use App\Http\Controllers\Manager\HomeController as ManagerHomeController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Manager\InstitucionalController as ManagerInstitucional
 use App\Http\Controllers\Manager\CasesController as ManagerCasesController;
 use App\Http\Controllers\Manager\ImagensCasesController as ManagerImagensCasesController;
 use App\Http\Controllers\Manager\CarreirasController as ManagerCarreirasController;
+use App\Http\Controllers\Manager\VagasController as ManagerVagasController;
 use App\Http\Controllers\Manager\ContatoController as ManagerContatoController;
 use App\Http\Controllers\Manager\PoliticasController as ManagerPoliticasController;
 use App\Http\Controllers\Manager\DashboardController as ManagerDashboardController;
@@ -51,6 +53,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::get('/carreiras', [CarreirasController::class, 'index'])->name('Carreiras.index');
     Route::post('/carreiras/enviar', [CarreirasController::class, 'enviar'])->name('Carreiras.enviar');
     Route::get('/carreiras/concluido/{token}', [CarreirasController::class, 'concluido'])->name('Carreiras.concluido');
+    Route::get('/carreiras/vagas/{id}/{slug?}', [CarreirasController::class, 'vaga'])->whereNumber('id')->name('Carreiras.vaga');
 
     Route::get('/contato', [ContatoController::class, 'index'])->name('Contato.index');
     Route::post('/contato/enviar', [ContatoController::class, 'enviar'])->name('Contato.enviar');
@@ -131,6 +134,15 @@ Route::prefix('/manager')->group(function () {
         Route::get('/carreiras/visualizar/{id}', [ManagerCarreirasController::class, 'visualizar'])->name('Manager.Carreiras.visualizar');
         Route::post('/carreiras/excluir/{id}', [ManagerCarreirasController::class, 'excluir'])->name('Manager.Carreiras.excluir');
         Route::get('/carreiras/baixar-curriculo/{id}', [ManagerCarreirasController::class, 'baixarCurriculo'])->name('Manager.Carreiras.baixarCurriculo');
+
+        Route::post('/vagas/ordenar', [ManagerVagasController::class, 'ordenar'])->name('Manager.Vagas.ordenar');
+        Route::post('/vagas/visibilidade/{id}', [ManagerVagasController::class, 'visibilidade'])->name('Manager.Vagas.visibilidade');
+        Route::post('/vagas/excluir/{id}', [ManagerVagasController::class, 'excluir'])->name('Manager.Vagas.excluir');
+
+        Route::get('/vagas/adicionar', [ManagerVagasController::class, 'adicionar'])->name('Manager.Vagas.adicionar');
+        Route::post('/vagas/adicionar', [ManagerVagasController::class, 'novo'])->name('Manager.Vagas.novo');
+        Route::get('/vagas/editar/{id}', [ManagerVagasController::class, 'editar'])->name('Manager.Vagas.editar');
+        Route::post('/vagas/editar/{id}', [ManagerVagasController::class, 'atualizar'])->name('Manager.Vagas.atualizar');
 
 
         Route::get('/politicas/privacidade', [ManagerPoliticasController::class, 'privacidade'])->name('Manager.Politicas.privacidade');

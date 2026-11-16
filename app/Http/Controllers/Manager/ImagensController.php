@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Conteudo;
 use App\Models\Imagem;
 
+use App\Services\ImageCompressor;
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
@@ -53,8 +54,24 @@ class ImagensController extends Controller
             return Inertia::location(route('Manager.Home.index'));
         }
 
+        $conteudoData = [
+            'id' => $conteudo->id,
+            'descricao' => $conteudo->parametro->descricao,
+            'controladora' => $conteudo->controladora,
+            'imagens' => $conteudo->imagens->map(function ($img) {
+                return [
+                    'id' => $img->id,
+                    'visivel' => $img->visivel ? true : false,
+                    'imagem' => asset('content/carousel/' . $img->imagem),
+                ];
+            })->values()->all(),
+        ];
+
+        $controller = $conteudo->controladora;
+        
         return Inertia::render('Manager/Imagens/conteudo', [
-            'conteudo' => $conteudo,
+            'conteudo' => $conteudoData,
+            'controller' => $controller
         ]);
     }
 
@@ -64,14 +81,14 @@ class ImagensController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function novo(Request $request, $id) {
+    public function novo(Request $request, $id, ImageCompressor $compressor) {
         if ($request->ajax()) {
             $conteudo = Conteudo::query()
                 ->where([
-                    'excluido' => NULL,
-                    'id' => $id
+                    'excluido' => null,
+                    'id' => $id,
                 ])
-                ->whereHas('parametro', function($q) {
+                ->whereHas('parametro', function ($q) {
                     $q->where(['galeria' => true]);
                 })
                 ->first();
@@ -80,26 +97,40 @@ class ImagensController extends Controller
                 return Inertia::location(route('Manager.Home.index'));
             }
 
-            foreach ($request->file('images') as $image) {
+            foreach ($request->file('images', []) as $image) {
+                if (empty($image['img']) || empty($image['img_original'])) {
+                    continue;
+                }
+
                 $imagem = new Imagem;
 
-                $imagem->imagem = md5(uniqid((string) rand(), true)) . '.' . strtolower($image['img']->extension());
-
+                $imagem->imagem = md5(uniqid((string) rand(), true)) . '.webp';
                 $imagem->controladora = $conteudo->controladora;
                 $imagem->acao = $conteudo->acao;
                 $imagem->conteudo_id = $conteudo->id;
 
-                $response = $imagem->save();
+                if ($imagem->save()) {
+                    $compressor->compressOrFallback(
+                        $image['img']->getRealPath(),
+                        public_path('content/images/' . $imagem->imagem)
+                    );
 
-                if ($response) {
-                    $image['img']->move(public_path('content/images/'), $imagem->imagem);
-                    $image['img_original']->move(public_path('content/carousel/'), $imagem->imagem);
+                    $image['img_original']->move(
+                        public_path('content/carousel/'),
+                        $imagem->imagem
+                    );
                 } else {
-                    return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Erro ao salvar imagem']);
+                    return redirect()->back()->with('message', [
+                        'type' => 'error',
+                        'msg' => 'Erro ao salvar imagem',
+                    ]);
                 }
             }
 
-            return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Imagens adicionadas com sucesso!']);
+            return redirect()->back()->with('message', [
+                'type' => 'success',
+                'msg' => 'Imagens adicionadas com sucesso!',
+            ]);
         }
 
         return redirect()->back();
