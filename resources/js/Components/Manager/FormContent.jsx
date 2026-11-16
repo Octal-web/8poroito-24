@@ -1,202 +1,325 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useForm } from '@inertiajs/react';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faSave, faImage, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faImage, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-import { InputText } from './Inputs/InputText';
-import { InputTextArea } from './Inputs/InputTextArea';
-import { InputCKEditor } from './Inputs/InputCKEditor';
-import { InputFileImage } from './Inputs/InputFileImage';
-import { InputLink } from './Inputs/InputLink';
+import { InputText } from "./Inputs/InputText";
+import { InputTextArea } from "./Inputs/InputTextArea";
+import { InputTipTapEditor } from "./Inputs/InputTipTapEditor";
+import { InputFileImage } from "./Inputs/InputFileImage";
+import { InputLink } from "./Inputs/InputLink";
 
-export const FormContent = ({ content, full, idioma }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+const makeFormData = (content) => ({
+    conteudosIdiomas: [{
+        ...(content.habilitar_titulo ? { titulo: content.titulo ?? "" } : {}),
+        ...(content.habilitar_subtitulo ? { subtitulo: content.subtitulo ?? "" } : {}),
+        ...(content.habilitar_texto ? { texto: content.texto ?? "" } : {}),
+        ...(content.habilitar_link ? {
+            link: content.link ?? "",
+            nova_aba: content.nova_aba ?? false,
+        } : {}),
+        ...(content.habilitar_video ? { video: content.video ?? "" } : {}),
+    }],
+});
+
+export const FormContent = (props) => {
+    const { url } = usePage();
+    const lang = new URL(url, "http://localhost").searchParams.get("lang") || props.idioma || null;
+
+    return <ContentForm key={JSON.stringify([props.content.id, lang])} {...props} lang={lang} />;
+};
+
+const ContentForm = ({ content, full, toolbar, idioma, lang }) => {
+    const [isCollapsed, setIsCollapsed] = useState(content.minimizavel);
+    const [contentHeight, setContentHeight] = useState("0px");
+
     const contentRef = useRef(null);
+    const contentInnerRef = useRef(null);
 
-    const contentHeight = useRef('0px');
+    const { data, setData, post, processing, errors, recentlySuccessful } = useForm(
+        `FormContent:${content.id}:${lang ?? "default"}`,
+        makeFormData(content)
+    );
+
+    const updateContentHeight = () => {
+        if (!contentRef.current || isCollapsed) return;
+
+        setContentHeight(`${contentRef.current.scrollHeight}px`);
+    };
+
+    const updateContentHeightAfterRender = (delay = 0) => {
+        return setTimeout(() => {
+            requestAnimationFrame(() => {
+                updateContentHeight();
+            });
+        }, delay);
+    };
+
     useEffect(() => {
-        if (contentRef.current) {
-            contentHeight.current = `${contentRef.current.scrollHeight}px`;
-        }
-        setIsCollapsed(content.minimizavel);
-    }, []);
+        if (!content.minimizavel || !contentInnerRef.current) return;
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const { data, setData, post, processing, errors } = useForm({
-        conteudosIdiomas: [
-            {
-                ...(content.titulo ? { titulo: content.titulo } : {}),
-                ...(content.subtitulo ? { subtitulo: content.subtitulo } : {}),
-                ...(content.texto ? { texto: content.texto } : {}),
-                ...(content.link ? { link: content.link } : {}),
-                ...(content.nova_aba !== undefined ? { nova_aba: content.nova_aba } : {}),
-            }
-        ],
-        ...(content.img ? { img: content.img } : {})
-    });
-
-
-    const handleChange = (name, content) => {
-        const [key, index, field] = name.split('.');
-
-        setData((prevData) => {
-            const updatedConteudosIdiomas = [...prevData.conteudosIdiomas];
-            updatedConteudosIdiomas[index][field] = content;
-            return { ...prevData, conteudosIdiomas: updatedConteudosIdiomas };
+        const resizeObserver = new ResizeObserver(() => {
+            updateContentHeight();
         });
+
+        resizeObserver.observe(contentInnerRef.current);
+
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [content.minimizavel, isCollapsed]);
+
+    useEffect(() => {
+        if (isCollapsed) return;
+
+        const timeout = updateContentHeightAfterRender();
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [isCollapsed]);
+
+    useEffect(() => {
+        if (isCollapsed) return;
+
+        const timeout = updateContentHeightAfterRender(150);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [content.imagem, content.imagem_mobile]);
+
+    const handleChange = (name, value) => {
+        const [, index, field] = name.split(".");
+
+        setData((previous) => ({
+            ...previous,
+            conteudosIdiomas: previous.conteudosIdiomas.map((translation, position) =>
+                position === Number(index) ? { ...translation, [field]: value } : translation
+            ),
+        }));
     };
 
     const handleCheckboxChange = (name, checked) => {
-        setData((prevData) => {
-            const updatedConteudosIdiomas = [...prevData.conteudosIdiomas];
-            updatedConteudosIdiomas[0][name] = checked;
-            return { ...prevData, conteudosIdiomas: updatedConteudosIdiomas };
-        });
+        handleChange(`conteudosIdiomas.0.${name}`, checked);
     };
 
-    const handleImageCrop = (croppedImage) => {
-        setData(prevData => ({
-            ...prevData,
-            img: croppedImage
-        }));
+    const handleImageCrop = (croppedImage, _fileExtension, name) => {
+        setData(name, croppedImage);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const idioma_url = new URLSearchParams(window.location.search).get('idioma');
-
-        post(route('Manager.Conteudos.editar', {id: content.id, idioma: idioma_url}), {
+        post(route("Manager.Conteudos.editar", { id: content.id, lang }), {
             preserveScroll: true,
+            preserveState: true,
+
+            onSuccess: () => {
+                updateContentHeightAfterRender();
+                updateContentHeightAfterRender(150);
+            },
         });
     };
 
     const toggleCollapse = () => {
-        setIsCollapsed(prev => !prev);
+        setIsCollapsed((prev) => !prev);
     };
 
     return (
-        <div className={`mb-6 rounded-sm border border-stroke bg-white px-5 py-5 shadow-md ${content.minimizavel && ' h-fit'}`}>
+        <div className={`mb-6 border border-stroke bg-white px-5 py-5 shadow-md ${content.minimizavel && " h-fit"}`}>
             <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-black">{content.bloco}</h3>
 
-                {content.galeria &&
+                {content.galeria && (
                     <Link
-                        href={route('Manager.Imagens.conteudo', {id: content.id})}
-                        className="flex items-center border border-stroke bg-white px-3 py-2 rounded-md transition-all hover:bg-slate-100 ml-2"
-                    >   
+                        href={route("Manager.Imagens.conteudo", { id: content.id })}
+                        className="flex items-center border border-stroke bg-white px-3 py-2 transition-all hover:bg-slate-100 ml-2"
+                    >
                         <FontAwesomeIcon icon={faImage} className="text-slate-700 mr-2" />
                         Imagens
                     </Link>
-                }
+                )}
 
-                {content.minimizavel &&
+                {content.minimizavel && (
                     <button
+                        type="button"
                         onClick={toggleCollapse}
-                        className="relative block ml-auto mr-1 before:content-[''] before:absolute before:-top-1 before:-left-2 before:w-8 before:h-8 before:border before:rounded-full"
+                        className="relative block ml-auto mr-1 before:content-[''] before:absolute before:-top-1 before:-left-1.5 before:w-8 before:h-8 before:border before:rounded-full"
                     >
                         <FontAwesomeIcon icon={isCollapsed ? faChevronDown : faChevronUp} />
                     </button>
-                }
+                )}
             </div>
 
             <div
                 ref={contentRef}
-                style={{ height: content.minimizavel ? (isCollapsed ? '0px' : contentHeight.current) : 'auto' }}
+                style={{
+                    height: content.minimizavel ? (isCollapsed ? "0px" : contentHeight) : "auto",
+                }}
                 className="transition-all duration-300 ease-in-out overflow-hidden"
             >
-                <div className="mt-10">
+                <div ref={contentInnerRef} className="mt-10">
                     <form onSubmit={handleSubmit}>
-                        { content.habilitar_titulo &&
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputText
-                                    title="Título"
-                                    name="conteudosIdiomas.0.titulo"
-                                    value={data.conteudosIdiomas[0].titulo}
-                                    idioma={idioma}
-                                    onChange={(name, value) => handleChange(name, value)}
-                                />
-                            </div>
-                        }
+                        {content.habilitar_titulo && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    {content.titulo_formatado ? (
+                                        <InputTipTapEditor
+                                            toolbar={["Bold", "Italic"]}
+                                            title="Título"
+                                            name="conteudosIdiomas.0.titulo"
+                                            idioma={idioma}
+                                            value={data.conteudosIdiomas[0].titulo ?? ""}
+                                            onChange={(name, value) => handleChange(name, value)}
+                                        />
+                                    ) : (
+                                        <InputText
+                                            title="Título"
+                                            name="conteudosIdiomas.0.titulo"
+                                            idioma={idioma}
+                                            value={data.conteudosIdiomas[0].titulo ?? ""}
+                                            onChange={(name, value) => handleChange(name, value)}
+                                        />
+                                    )}
 
-                        { content.habilitar_subtitulo &&
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputText
-                                    title="Subtítulo"
-                                    name="conteudosIdiomas.0.subtitulo"
-                                    value={data.conteudosIdiomas[0].subtitulo}
-                                    idioma={idioma}
-                                    onChange={(name, value) => handleChange(name, value)}
-                                />
+                                    {errors["conteudosIdiomas.0.titulo"] && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors["conteudosIdiomas.0.titulo"]}</p>
+                                    )}
+                                </div>
                             </div>
-                        }
+                        )}
 
-                        { content.habilitar_texto &&
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                { content.texto_formatado ?
-                                    <InputCKEditor
-                                        title="Texto"
-                                        name="conteudosIdiomas.0.texto"
-                                        toolbar={['Bold', 'Italic']}
-                                        value={data.conteudosIdiomas[0].texto}
+                        {content.habilitar_subtitulo && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    <InputText
+                                        title="Subtítulo"
+                                        name="conteudosIdiomas.0.subtitulo"
                                         idioma={idioma}
-                                        onChange={(name, content) => handleChange(name, content)}
-                                    />
-                                :
-                                    <InputTextArea
-                                        title="Texto"
-                                        name="conteudosIdiomas.0.texto"
-                                        value={data.conteudosIdiomas[0].texto}
-                                        idioma={idioma}
+                                        value={data.conteudosIdiomas[0].subtitulo ?? ""}
                                         onChange={(name, value) => handleChange(name, value)}
                                     />
-                                }
-                            </div>
-                        }
 
-                        { content.habilitar_link &&
-
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputLink
-                                    title="Link"
-                                    name="conteudosIdiomas.0.link"
-                                    value={data.conteudosIdiomas[0].link}
-                                    idioma={idioma}
-                                    onChange={(name, value) => handleChange(name, value)}
-                                    onCheck={(name, value) => handleCheckboxChange(name, value)}
-                                    novaAba={data.conteudosIdiomas[0].nova_aba}
-                                />
+                                    {errors["conteudosIdiomas.0.subtitulo"] && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors["conteudosIdiomas.0.subtitulo"]}</p>
+                                    )}
+                                </div>
                             </div>
-                        }
+                        )}
 
-                        { content.habilitar_img &&
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputFileImage title="Imagem" imagem={`/content/display/${content.imagem}`} size={{largura: content.largura_img, altura: content.altura_img}} crop={content.recortar_img} onImageCrop={handleImageCrop} />
-                            </div>
-                        }
+                        {content.habilitar_texto && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    {content.texto_formatado ? (
+                                        <InputTipTapEditor
+                                            title="Texto"
+                                            name="conteudosIdiomas.0.texto"
+                                            idioma={idioma}
+                                            toolbar={["Bold", "Italic", "Underline", ...(toolbar || [])]}
+                                            value={data.conteudosIdiomas[0].texto ?? ""}
+                                            onChange={(name, value) => handleChange(name, value)}
+                                        />
+                                    ) : (
+                                        <InputTextArea
+                                            title="Texto"
+                                            name="conteudosIdiomas.0.texto"
+                                            idioma={idioma}
+                                            value={data.conteudosIdiomas[0].texto ?? ""}
+                                            onChange={(name, value) => handleChange(name, value)}
+                                        />
+                                    )}
 
-                        { content.habilitar_img_mobile &&
-                            <div className={`w-full ${full && 'sm:w-5/6 md:w-2/3 lg:w-2/3'}`}>
-                                <InputFileImage title="Imagem Mobile" imagem={`/content/display/${content.imagem_mobile}`} size={{largura: content.largura_img_mobile, altura: content.altura_img_mobile}} crop={content.recortar_img_mobile} onImageCrop={handleImageCrop} />
+                                    {errors["conteudosIdiomas.0.texto"] && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors["conteudosIdiomas.0.texto"]}</p>
+                                    )}
+                                </div>
                             </div>
-                        }
+                        )}
+
+                        {content.habilitar_link && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    <InputLink
+                                        title="Link"
+                                        name="conteudosIdiomas.0.link"
+                                        idioma={idioma}
+                                        value={data.conteudosIdiomas[0].link ?? ""}
+                                        onChange={(name, value) => handleChange(name, value)}
+                                        onCheck={(name, value) => handleCheckboxChange(name, value)}
+                                        novaAba={data.conteudosIdiomas[0].nova_aba ?? false}
+                                    />
+
+                                    {errors["conteudosIdiomas.0.link"] && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors["conteudosIdiomas.0.link"]}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {content.habilitar_video && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    <InputLink
+                                        title="Vídeo"
+                                        name="conteudosIdiomas.0.video"
+                                        idioma={idioma}
+                                        value={data.conteudosIdiomas[0].video ?? ""}
+                                        onChange={(name, value) => handleChange(name, value)}
+                                    />
+
+                                    {errors["conteudosIdiomas.0.video"] && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors["conteudosIdiomas.0.video"]}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {content.habilitar_img && (
+                            <div className="grid grid-cols-12 gap-x-6">
+                                <div className={`col-span-12 ${full ? " lg:col-span-8" : ""}`}>
+                                    <InputFileImage
+                                        title="Imagem"
+                                        name="img"
+                                        imagem={content.imagem}
+                                        size={{ largura: content.largura_img, altura: content.altura_img }}
+                                        allowCrop={content.recortar_img ? true : false}
+                                        onImageCrop={handleImageCrop}
+                                    />
+
+                                    {errors.img && (
+                                        <p className="text-sm text-red-500 -mt-5 mb-3">{errors.img}</p>
+                                    )}
+                                </div>
+
+                                {content.habilitar_img_mobile && (
+                                    <div className={`col-span-12 ${full ? " lg:col-span-4" : ""}`}>
+                                        <InputFileImage
+                                            title="Imagem Mobile"
+                                            name="img_mobile"
+                                            imagem={content.imagem_mobile}
+                                            size={{ largura: content.largura_img_mobile, altura: content.altura_img_mobile }}
+                                            allowCrop={content.recortar_img_mobile ? true : false}
+                                            onImageCrop={handleImageCrop}
+                                        />
+
+                                        {errors.img_mobile && (
+                                            <p className="text-sm text-red-500 -mt-5 mb-3">{errors.img_mobile}</p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         <div className="flex items-center justify-end">
                             <button
                                 type="submit"
-                                className="block relative w-fit rounded-lg border border-gray-300 px-3 py-2 cursor-pointer transition-all hover:bg-slate-200"
-                            >   
+                                disabled={processing}
+                                className="block relative w-fit border border-gray-300 px-3 py-2 cursor-pointer transition-all hover:bg-slate-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
                                 <FontAwesomeIcon icon={faSave} className="text-slate-700 mr-2" />
-                                Salvar
+                                {processing ? "Salvando..." : recentlySuccessful ? "Salvo!" : "Salvar"}
                             </button>
                         </div>
                     </form>

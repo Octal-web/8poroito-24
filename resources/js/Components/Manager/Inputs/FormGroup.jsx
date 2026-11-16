@@ -1,11 +1,10 @@
-import React from 'react';
 
-import { InputText } from './InputText';
-import { InputNumber } from './InputNumber';
-import { InputTextArea } from './InputTextArea';
-import { InputCKEditor } from './InputCKEditor';
-import { InputFileImage } from './InputFileImage';
 import { InputCheckbox } from './InputCheckbox';
+import { InputFileImage } from './InputFileImage';
+import { InputNumber } from './InputNumber';
+import { InputText } from './InputText';
+import { InputTextArea } from './InputTextArea';
+import { InputTipTapEditor } from './InputTipTapEditor';
 import { InputSelect } from './InputSelect';
 
 export const FormGroup = ({ input, idioma, imagem, value, toolbar, onChange, handleImageCrop }) => {
@@ -24,10 +23,11 @@ export const FormGroup = ({ input, idioma, imagem, value, toolbar, onChange, han
         case 'texto_longo':
             return (
                 input.editor ?
-                <InputCKEditor
+                <InputTipTapEditor
                     title={input.titulo}
                     name={input.name}
                     value={value}
+                    max={input.max}
                     idioma={idioma.codigo}
                     toolbar={input.toolbar}
                     onChange={onChange}

@@ -26,6 +26,8 @@ use App\Http\Controllers\Manager\VagasController as ManagerVagasController;
 use App\Http\Controllers\Manager\ContatoController as ManagerContatoController;
 use App\Http\Controllers\Manager\PoliticasController as ManagerPoliticasController;
 use App\Http\Controllers\Manager\DashboardController as ManagerDashboardController;
+use App\Http\Controllers\Manager\FinderController as ManagerFinderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -39,42 +41,42 @@ use App\Http\Controllers\Manager\DashboardController as ManagerDashboardControll
 */
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
-	Route::get('/', [HomeController::class, 'index'])->name('Home.index');
+    Route::get('/', [HomeController::class, 'index'])->name('Home.index');
 
-	Route::post('/newsletter/enviar', [NewsletterController::class, 'enviar'])->name('Newsletter.enviar');
+    Route::post('/newsletter/enviar', [NewsletterController::class, 'enviar'])->name('Newsletter.enviar');
 
-	Route::get('/sobre-nos', [InstitucionalController::class, 'index'])->name('Institucional.index');
+    Route::get('/sobre-nos', [InstitucionalController::class, 'index'])->name('Institucional.index');
 
-	Route::get('/cases', [CasesController::class, 'index'])->name('Cases.index');
-	Route::get('/cases/{slug}', [CasesController::class, 'caseCliente'])->name('Cases.caseCliente');
+    Route::get('/cases', [CasesController::class, 'index'])->name('Cases.index');
+    Route::get('/cases/{slug}', [CasesController::class, 'caseCliente'])->name('Cases.caseCliente');
 
-	Route::get('/carreiras', [CarreirasController::class, 'index'])->name('Carreiras.index');
-	Route::post('/carreiras/enviar', [CarreirasController::class, 'enviar'])->name('Carreiras.enviar');
-	Route::get('/carreiras/concluido/{token}', [CarreirasController::class, 'concluido'])->name('Carreiras.concluido');
-	Route::get('/carreiras/vagas/{id}/{slug?}', [CarreirasController::class, 'vaga'])->whereNumber('id')->name('Carreiras.vaga');
+    Route::get('/carreiras', [CarreirasController::class, 'index'])->name('Carreiras.index');
+    Route::post('/carreiras/enviar', [CarreirasController::class, 'enviar'])->name('Carreiras.enviar');
+    Route::get('/carreiras/concluido/{token}', [CarreirasController::class, 'concluido'])->name('Carreiras.concluido');
+    Route::get('/carreiras/vagas/{id}/{slug?}', [CarreirasController::class, 'vaga'])->whereNumber('id')->name('Carreiras.vaga');
 
-	Route::get('/contato', [ContatoController::class, 'index'])->name('Contato.index');
-	Route::post('/contato/enviar', [ContatoController::class, 'enviar'])->name('Contato.enviar');
-	Route::get('/contato/concluido/{token}', [ContatoController::class, 'concluido'])->name('Contato.concluido');
+    Route::get('/contato', [ContatoController::class, 'index'])->name('Contato.index');
+    Route::post('/contato/enviar', [ContatoController::class, 'enviar'])->name('Contato.enviar');
+    Route::get('/contato/concluido/{token}', [ContatoController::class, 'concluido'])->name('Contato.concluido');
 
-	Route::get('/politica-de-privacidade', [PoliticasController::class, 'privacidade'])->name('Politicas.privacidade');
+    Route::get('/politica-de-privacidade', [PoliticasController::class, 'privacidade'])->name('Politicas.privacidade');
 });
 
-Route::prefix('/manager')->group(function() {
+Route::prefix('/manager')->group(function () {
     Route::get('/', [UsuariosController::class, 'login'])->name('Manager.Usuarios.login');
     Route::post('/', ['as' => 'login', 'uses' => 'App\Http\Controllers\Manager\UsuariosController@authenticate']);
 
     Route::post('/usuarios/logout', [UsuariosController::class, 'logout'])->name('Manager.Usuarios.logout');
 
-    Route::group(['middleware' => ['auth']], function() {
+    Route::group(['middleware' => ['auth']], function () {
         Route::post('/paginas/editar/{id}', [ManagerPaginasController::class, 'editarAction'])->name('Manager.Paginas.editar');
 
         Route::post('/conteudos/editar/{id}', [ManagerConteudosController::class, 'editarAction'])->name('Manager.Conteudos.editar');
         Route::post('/conteudos/baixar-arquivo/{id}', [ManagerConteudosController::class, 'baixarArquivo'])->name('Manager.Conteudos.baixarArquivo');
-        
+
         Route::get('/imagens/{id}', [ManagerImagensController::class, 'conteudo'])->name('Manager.Imagens.conteudo');
         Route::post('/imagens/conteudo/adicionar/{id}', [ManagerImagensController::class, 'novo'])->name('Manager.Imagens.novo');
-        
+
         Route::post('/imagens/conteudo/ordenar/{id}', [ManagerImagensController::class, 'ordenar'])->name('Manager.Imagens.ordenar');
         Route::post('/imagens/conteudo/visibilidade/{id}', [ManagerImagensController::class, 'visibilidade'])->name('Manager.Imagens.visibilidade');
         Route::post('/imagens/conteudo/excluir/{id}', [ManagerImagensController::class, 'excluir'])->name('Manager.Imagens.excluir');
@@ -117,7 +119,7 @@ Route::prefix('/manager')->group(function() {
         Route::get('/cases/imagens/{id}', [ManagerImagensCasesController::class, 'index'])->name('Manager.Cases.Imagens.index');
         Route::post('/cases/imagens/conteudo/adicionar/{id}', [ManagerImagensCasesController::class, 'novo'])->name('Manager.Cases.Imagens.novo');
         Route::put('/cases/imagens/conteudo/tamanho/{id}', [ManagerImagensCasesController::class, 'tamanho'])->name('Manager.Cases.Imagens.tamanho');
-        
+
         Route::post('/cases/imagens/conteudo/ordenar/{id}', [ManagerImagensCasesController::class, 'ordenar'])->name('Manager.Cases.Imagens.ordenar');
         Route::post('/cases/imagens/conteudo/visibilidade/{id}', [ManagerImagensCasesController::class, 'visibilidade'])->name('Manager.Cases.Imagens.visibilidade');
         Route::post('/cases/imagens/conteudo/excluir/{id}', [ManagerImagensCasesController::class, 'excluir'])->name('Manager.Cases.Imagens.excluir');
@@ -148,7 +150,14 @@ Route::prefix('/manager')->group(function() {
 
         Route::get('/dashboard', [ManagerDashboardController::class, 'index'])->name('Manager.Dashboard.index');
         Route::get('/dashboard/obterData', [ManagerDashboardController::class, 'obterData'])->name('Manager.Dashboard.obterData');
-	});
+
+        Route::get('/finder/list', [ManagerFinderController::class, 'list'])->name('Manager.Finder.list');
+        Route::post('/finder/upload', [ManagerFinderController::class, 'upload'])->name('Manager.Finder.upload');
+        Route::delete('/finder/delete', [ManagerFinderController::class, 'delete'])->name('Manager.Finder.delete');
+        Route::post('/finder/rename', [ManagerFinderController::class, 'rename'])->name('Manager.Finder.rename');
+        Route::post('/finder/folder', [ManagerFinderController::class, 'createFolder'])->name('Manager.Finder.createFolder');
+        Route::post('/finder/move', [ManagerFinderController::class, 'move'])->name('Manager.Finder.move');
+    });
 });
 
 Auth::routes(['login' => false]);
