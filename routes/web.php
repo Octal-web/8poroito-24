@@ -10,6 +10,7 @@ use App\Http\Controllers\CasesController;
 use App\Http\Controllers\CarreirasController;
 use App\Http\Controllers\ContatoController;
 use App\Http\Controllers\PoliticasController;
+use App\Http\Controllers\SitemapController;
 
 use App\Http\Controllers\Manager\UsuariosController;
 use App\Http\Controllers\Manager\PaginasController as ManagerPaginasController;
@@ -42,6 +43,8 @@ use App\Http\Controllers\Manager\FinderController as ManagerFinderController;
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('Home.index');
+
+    Route::get('/sitemap.xml', [SitemapController::class, '__invoke'])->name('Sitemap.index');
 
     Route::post('/newsletter/enviar', [NewsletterController::class, 'enviar'])->name('Newsletter.enviar');
 
