@@ -83,7 +83,7 @@ const AdminLayout = ({ children }) => {
                     </button>
                 </div>
 
-                <aside id="sidebar" className={`group menu-aside fixed left-0 top-0 z-[2] flex h-full md:h-[calc(100vh-7rem)] w-full md:w-16 md:hover:w-64 rounded-xl flex-col overflow-hidden bg-primary duration-200 ease-linear md:translate-x-0 pt-16 md:pt-0 md:mx-10 md:my-14 shadow-lg ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full invisible md:visible'}`}>
+                <aside id="sidebar" className={`group menu-aside fixed left-0 top-0 z-40 flex h-full md:h-[calc(100vh-7rem)] w-full md:w-16 md:hover:w-64 rounded-xl flex-col overflow-hidden bg-primary duration-200 ease-linear md:translate-x-0 pt-16 md:pt-0 md:mx-10 md:my-14 shadow-lg ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full invisible md:visible'}`}>
                     <div className="w-64 flex flex-col h-full">
                         <div className="flex items-center justify-between gap-2 px-4">
                             <Link href={route('Manager.Home.index')} className="mt-6">
