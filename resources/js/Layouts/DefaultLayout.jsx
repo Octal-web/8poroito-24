@@ -135,15 +135,28 @@ const DefaultLayout = ({ children }) => {
         ],
     };
 
+    const canonicalUrl =
+        window.location.origin.replace("://www.", "://") +
+        window.location.pathname;
+
     return (
         <SmoothScrollContext.Provider value={lenisRef}>
             <Head>
                 <title>{pagina.titulo}</title>
                 <meta name="description" content={pagina.descricao} />
 
+                <link
+                    head-key="canonical"
+                    rel="canonical"
+                    href={canonicalUrl}
+                />
                 <meta name="twitter:card" content="summary" />
 
-                <meta property="og:url" content={window.location.pathname} />
+                <meta
+                    head-key="og-url"
+                    property="og:url"
+                    content={canonicalUrl}
+                />
                 <meta property="og:type" content="website" />
                 <meta
                     property="og:title"
