@@ -14,8 +14,9 @@ class CasesController extends Controller
 {
     protected $caseClienteService;
 
-    public function __construct(CaseClienteService $caseClienteService) {
-        
+    public function __construct(CaseClienteService $caseClienteService)
+    {
+
         parent::__construct();
         $this->caseClienteService = $caseClienteService;
     }
@@ -25,7 +26,8 @@ class CasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         $idioma = inertia()->getShared('idioma');
 
         $casesClientes = CaseCliente::query()
@@ -38,7 +40,7 @@ class CasesController extends Controller
                         $r->where('codigo', $idioma)
                             ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 }
             ])
             ->orderBy('ordem', 'ASC')
@@ -63,7 +65,8 @@ class CasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function adicionar() {
+    public function adicionar()
+    {
         return Inertia::render('Manager/Cases/adicionar');
     }
 
@@ -73,7 +76,8 @@ class CasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function novo(PostCaseRequest $request) {
+    public function novo(PostCaseRequest $request)
+    {
         if (!$request->ajax()) {
             return to_route('Manager.Cases.index');
         }
@@ -94,9 +98,10 @@ class CasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editar($id) {
+    public function editar($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Cases.index'));
+            return redirect()->route('Manager.Cases.index', [], 301);
         }
 
         $idiomas = Idioma::query()
@@ -118,11 +123,11 @@ class CasesController extends Controller
                             $query->where('codigo', $idioma);
                         });
                     })
-                    ->when(!$idioma, function ($r) {
-                        $r->whereHas('idiomas', function ($query) {
-                            $query->where('padrao', true);
+                        ->when(!$idioma, function ($r) {
+                            $r->whereHas('idiomas', function ($query) {
+                                $query->where('padrao', true);
+                            });
                         });
-                    });
                 },
             ])
             ->first();
@@ -162,7 +167,8 @@ class CasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function atualizar(PostCaseRequest $request, $id) {
+    public function atualizar(PostCaseRequest $request, $id)
+    {
         if (!$request->ajax()) {
             return to_route('Manager.Cases.index');
         }
@@ -187,7 +193,8 @@ class CasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
+    public function excluir(Request $request, $id)
+    {
         if (!$request->ajax()) {
             return $request->header('referer');
         }
@@ -212,7 +219,8 @@ class CasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function visibilidade(Request $request, $id) {
+    public function visibilidade(Request $request, $id)
+    {
         if (!$request->ajax()) {
             return $request->header('referer');
         }
@@ -240,7 +248,8 @@ class CasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function ordenar(Request $request) {
+    public function ordenar(Request $request)
+    {
         if (!$request->ajax()) {
             return redirect()->back();
         }

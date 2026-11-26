@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Mail;
 
 class ContatoController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return Inertia::render('Contato/index', [
             'googleMapsApiKey' => config('services.google_maps.key'),
         ]);
@@ -21,8 +22,9 @@ class ContatoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function enviar(PostContactRequest $request) {
-        if($request->post()){
+    public function enviar(PostContactRequest $request)
+    {
+        if ($request->post()) {
             $contato = new Contato;
 
             $token = md5(uniqid(rand(), true));
@@ -50,11 +52,11 @@ class ContatoController extends Controller
 
                 // O contato já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
                 try {
-                    Mail::send('emails.contact', $data, function($message) use ($data) {
+                    Mail::send('emails.contact', $data, function ($message) use ($data) {
                         $message->from('site@8poroito.com.br')
-                                ->to('atendimento@8poroito.com.br')
-                                ->replyTo($data['email'], $data['nome'])
-                                ->subject('Um novo contato veio através do site' . ($data['proposta'] ? ' (solicitou proposta)' : ''));
+                            ->to('atendimento@8poroito.com.br')
+                            ->replyTo($data['email'], $data['nome'])
+                            ->subject('Um novo contato veio através do site' . ($data['proposta'] ? ' (solicitou proposta)' : ''));
                     });
                 } catch (\Throwable $e) {
                     report($e);
@@ -66,7 +68,7 @@ class ContatoController extends Controller
             }
         }
 
-        return Inertia::location(route('Contato.index'));
+        return redirect()->route('Contato.index', [], 301);
     }
 
     /**
@@ -74,7 +76,8 @@ class ContatoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function concluido($token) {
+    public function concluido($token)
+    {
 
         $contato = Contato::query()
             ->where([

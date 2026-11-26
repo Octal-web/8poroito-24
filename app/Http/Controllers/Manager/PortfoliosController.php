@@ -4,17 +4,13 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
-use App\Models\PortfolioIdioma;
-use App\Models\Idioma;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Requests\Manager\PostPortfolioRequest;
 
 use Carbon\Carbon;
-use Spatie\Image\Image;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
 
 use DeepCopy\DeepCopy;
 
@@ -25,7 +21,8 @@ class PortfoliosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function adicionar() {
+    public function adicionar()
+    {
         return Inertia::render('Manager/Portfolios/adicionar');
     }
 
@@ -35,10 +32,11 @@ class PortfoliosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function novo(PostPortfolioRequest $request) {
-        if($request->ajax()){
+    public function novo(PostPortfolioRequest $request)
+    {
+        if ($request->ajax()) {
             $idioma = inertia()->getShared('idioma');
-            
+
             $portfolio = new Portfolio;
 
             $portfolio->nome = $request->nome;
@@ -61,9 +59,10 @@ class PortfoliosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editar($id) {
+    public function editar($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Home.index'));
+            return redirect()->route('Manager.Home.index', [], 301);
         }
 
         $portfolio = Portfolio::query()
@@ -73,8 +72,8 @@ class PortfoliosController extends Controller
             ])
             ->first();
 
-        if(!$portfolio) {
-            return Inertia::location(route('Manager.Home.index'));
+        if (!$portfolio) {
+            return redirect()->route('Manager.Home.index', [], 301);
         }
 
         $idioma = inertia()->getShared('idioma');
@@ -101,8 +100,9 @@ class PortfoliosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function atualizar(PostPortfolioRequest $request, $id) {
-        if($request->ajax()){
+    public function atualizar(PostPortfolioRequest $request, $id)
+    {
+        if ($request->ajax()) {
             $portfolio = Portfolio::query()
                 ->where([
                     'excluido' => null,
@@ -148,8 +148,9 @@ class PortfoliosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
-        if ($request->ajax()){
+    public function excluir(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return $request->header('referer');
             }
@@ -178,8 +179,9 @@ class PortfoliosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function visibilidade(Request $request, $id) {
-        if ($request->ajax()){
+    public function visibilidade(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return redirect()->back()->with(['type' => 'error', 'message' => 'Registro não encontrado!']);
             }
@@ -194,14 +196,13 @@ class PortfoliosController extends Controller
             if (!$response) {
                 return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registro não encontrado!']);
             }
-    
+
             $response->visivel = 1 - $response->visivel;
             $response->save();
-    
+
             if ($response) {
                 return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Visibilidade alterada com sucesso!']);
-            }
-            else {
+            } else {
                 return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Visibilidade não alterada!']);
             }
         }
@@ -216,8 +217,9 @@ class PortfoliosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ordenar(Request $request) {
-        if ($request->ajax()){
+    public function ordenar(Request $request)
+    {
+        if ($request->ajax()) {
             $erros = [];
 
             if ($request->odr && is_array($request->odr)) {

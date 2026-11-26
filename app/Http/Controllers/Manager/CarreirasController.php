@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\Cargo;
 use App\Models\Curriculo;
-use App\Models\Idioma;
 use App\Models\Vaga;
 
 use Illuminate\Http\Request;
@@ -22,7 +21,8 @@ class CarreirasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $idioma = inertia()->getShared('idioma');
 
         $vagas = Vaga::query()
@@ -35,7 +35,7 @@ class CarreirasController extends Controller
                         $r->where('codigo', $idioma->codigo)
                             ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 }
             ])
             ->orderBy('ordem', 'ASC')
@@ -70,9 +70,9 @@ class CarreirasController extends Controller
                         ->orWhere('email', 'like', $termo);
                 });
             })
-            ->when($filtros['vaga'] === 'banco', fn ($q) => $q->whereNull('vaga_id'))
-            ->when(ctype_digit($filtros['vaga']), fn ($q) => $q->where('vaga_id', $filtros['vaga']))
-            ->when(ctype_digit($filtros['cargo']), fn ($q) => $q->where('cargo_id', $filtros['cargo']))
+            ->when($filtros['vaga'] === 'banco', fn($q) => $q->whereNull('vaga_id'))
+            ->when(ctype_digit($filtros['vaga']), fn($q) => $q->where('vaga_id', $filtros['vaga']))
+            ->when(ctype_digit($filtros['cargo']), fn($q) => $q->where('cargo_id', $filtros['cargo']))
             ->with([
                 'cargo:id,nome',
                 'vaga.vagasIdiomas' => function ($q) {
@@ -104,24 +104,25 @@ class CarreirasController extends Controller
         ]);
     }
 
-    public function visualizar($id) {
+    public function visualizar($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Carreiras.index'));
+            return redirect()->route('Manager.Carreiras.index', [], 301);
         }
-        
+
         $curriculo = Curriculo::query()
             ->where([
                 'excluido' => NULL,
                 'id' => $id
             ])
             ->with([
-                'cargo' => function ($q)  {
+                'cargo' => function ($q) {
                     $q->where([
                         'excluido' => NULL,
                         'visivel' => true
                     ]);
                 },
-                'redes_sociais' => function ($q)  {
+                'redes_sociais' => function ($q) {
                     $q->where([
                         'excluido' => NULL
                     ]);
@@ -134,7 +135,7 @@ class CarreirasController extends Controller
             ])
             ->first();
 
-        if(!$curriculo) {
+        if (!$curriculo) {
             return Inertia::location(route('Manager.Carreiras.index'));
         }
 
@@ -169,8 +170,9 @@ class CarreirasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
-        if ($request->ajax()){
+    public function excluir(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return $request->header('referer');
             }
@@ -199,7 +201,8 @@ class CarreirasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function baixarCurriculo($id) {
+    public function baixarCurriculo($id)
+    {
         $curriculo = Curriculo::query()
             ->where([
                 'excluido' => NULL,
@@ -208,11 +211,11 @@ class CarreirasController extends Controller
             ->first();
 
         if (!$curriculo) {
-            return Inertia::location(route('Manager.Carreiras.index'));
+            return redirect()->route('Manager.Carreiras.index', [], 301);
         }
 
         $caminho = public_path('content/resumes/' . $curriculo->arquivo);
-        
+
         if (!file_exists($caminho)) {
             return redirect()->back()->with('message', ['type' => 'alert', 'msg' => 'Arquivo não encontrado.']);
         }

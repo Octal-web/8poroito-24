@@ -21,9 +21,10 @@ class UsuariosController extends Controller
     |
     */
 
-    public function login() {
+    public function login()
+    {
         if (Auth::user()) {
-            return Inertia::location(route('Manager.Home.index'));
+            return redirect()->route('Manager.Home.index', [], 301);
         }
 
         if (isset(session('url')['intended'])) {
@@ -38,7 +39,8 @@ class UsuariosController extends Controller
         return Inertia::render('Manager/Usuarios/login');
     }
 
-    public function authenticate(Request $request) {
+    public function authenticate(Request $request)
+    {
         $creds = $request->only(['email', 'password']);
 
         if ($request->input('email') == null || $request->input('password') == null) {
@@ -49,10 +51,10 @@ class UsuariosController extends Controller
                 ]
             ]);
         } else {
-            if(Auth::attempt($creds)) {
-                
+            if (Auth::attempt($creds)) {
+
                 $request->session()->regenerate();
-     
+
                 return redirect()->intended('manager/home');
             } else {
                 return Inertia::render('Manager/Usuarios/login', [
@@ -72,6 +74,6 @@ class UsuariosController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Inertia::location(route('Manager.Usuarios.login'));
+        return redirect()->route('Manager.Usuarios.login', [], 301);
     }
 }
