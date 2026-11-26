@@ -10,7 +10,8 @@ use App\Models\Pagina;
 
 class CasesController extends Controller
 {
-    public function index() {
+    public function index()
+    {
 
         $idioma = view()->shared('idioma');
 
@@ -23,15 +24,15 @@ class CasesController extends Controller
                 'casesClientesIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 },
             ])
             ->orderBy('ordem', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($caseCliente) {
+            ->map(function ($caseCliente) {
                 return [
                     'id' => $caseCliente->id,
                     'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,
@@ -45,7 +46,8 @@ class CasesController extends Controller
         ]);
     }
 
-    public function caseCliente($slug) {
+    public function caseCliente($slug)
+    {
 
         $idioma = view()->shared('idioma');
 
@@ -59,17 +61,17 @@ class CasesController extends Controller
                 'casesClientesIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 },
                 'imagensCases' => function ($q) {
                     $q->where([
                         'visivel' => true,
                         'excluido' => NULL
                     ])
-                    ->orderBy('ordem', 'ASC')
-                    ->orderBy('id', 'DESC'); 
+                        ->orderBy('ordem', 'ASC')
+                        ->orderBy('id', 'DESC');
                 }
 
             ])
@@ -77,8 +79,8 @@ class CasesController extends Controller
             ->orderBy('id', 'DESC')
             ->first();
 
-        if(!$caseCliente) {
-            return Inertia::location(route('Cases.index'));
+        if (!$caseCliente) {
+            return redirect()->route('Cases.index', [], 301);
         }
 
         // Case anterior/próximo na mesma ordem da listagem, voltando ao início/fim nas pontas.
@@ -108,15 +110,15 @@ class CasesController extends Controller
                 'casesClientesIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 },
             ])
             ->orderBy('ordem', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($caseCliente) {
+            ->map(function ($caseCliente) {
                 return [
                     'id' => $caseCliente->id,
                     'titulo' => $caseCliente->casesClientesIdiomas[0]->titulo,

@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Mail;
 
 class CarreirasController extends Controller
 {
-    public function index() {
+    public function index()
+    {
 
         $idioma = view()->shared('idioma');
 
@@ -31,16 +32,16 @@ class CarreirasController extends Controller
                 'vagasIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 },
             ])
             ->orderBy('ordem', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->filter(fn ($vaga) => $vaga->vagasIdiomas->isNotEmpty())
-            ->map(function($vaga) {
+            ->filter(fn($vaga) => $vaga->vagasIdiomas->isNotEmpty())
+            ->map(function ($vaga) {
                 return [
                     'id' => $vaga->id,
                     'titulo' => $vaga->vagasIdiomas[0]->titulo,
@@ -61,12 +62,12 @@ class CarreirasController extends Controller
             ->orderBy('id', 'DESC')
             ->limit(4)
             ->get()
-            ->map(function($imagem) {
+            ->map(function ($imagem) {
                 return [
                     'id' => $imagem->id,
                     'imagem' => asset('/content/images/' . $imagem->imagem),
                 ];
-        });
+            });
 
         return Inertia::render('Carreiras/index', [
             'vagas' => $vagas,
@@ -74,7 +75,8 @@ class CarreirasController extends Controller
         ]);
     }
 
-    public function vaga($id, $slug = null) {
+    public function vaga($id, $slug = null)
+    {
 
         $idioma = view()->shared('idioma');
 
@@ -88,15 +90,15 @@ class CarreirasController extends Controller
                 'vagasIdiomas' => function ($q) use ($idioma) {
                     $q->whereHas('idiomas', function ($r) use ($idioma) {
                         $r->where('codigo', $idioma)
-                        ->orWhere('padrao', true);
+                            ->orWhere('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 },
             ])
             ->first();
 
         if (!$vaga || $vaga->vagasIdiomas->isEmpty()) {
-            return Inertia::location(route('Carreiras.index'));
+            return redirect()->route('Carreiras.index', [], 301);
         }
 
         $vagaIdioma = $vaga->vagasIdiomas[0];
@@ -123,8 +125,9 @@ class CarreirasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function enviar(PostCareerRequest $request) {
-        if($request->post()){
+    public function enviar(PostCareerRequest $request)
+    {
+        if ($request->post()) {
             $curriculo = new Curriculo;
 
             $token = md5(uniqid(rand(), true));
@@ -187,19 +190,19 @@ class CarreirasController extends Controller
                 $data['pretensao'] = $request->pretensao;
                 $data['apresentacao'] = $request->apresentacao;
                 $data['projetos'] = $request->projetos;
-                $data['redesSociais'] = $curriculo->redes_sociais->map(fn ($rede) => ['tipo' => $rede->tipo, 'link' => $rede->link])->all();
+                $data['redesSociais'] = $curriculo->redes_sociais->map(fn($rede) => ['tipo' => $rede->tipo, 'link' => $rede->link])->all();
                 $data['curriculo'] = $curriculo->arquivo ? $curriculo->arquivo : null;
 
                 // O currículo já foi salvo: uma falha no e-mail não deve impedir a página de obrigado.
                 try {
-                    Mail::send('emails.curriculum', $data, function($message) use ($data) {
+                    Mail::send('emails.curriculum', $data, function ($message) use ($data) {
                         $message->from('site@8poroito.com.br')
-                                ->to('trabalheconosco@8poroito.com.br')
-                                ->bcc('rafael@8poroito.com.br')
-                                ->replyTo($data['email'], $data['nome'])
-                                ->subject($data['vaga']
-                                    ? 'Um novo currículo veio através do site - Vaga: ' . $data['vaga']
-                                    : 'Um novo currículo veio através do site');
+                            ->to('trabalheconosco@8poroito.com.br')
+                            ->bcc('rafael@8poroito.com.br')
+                            ->replyTo($data['email'], $data['nome'])
+                            ->subject($data['vaga']
+                                ? 'Um novo currículo veio através do site - Vaga: ' . $data['vaga']
+                                : 'Um novo currículo veio através do site');
 
                         if ($data['curriculo']) {
                             $message->attach(public_path('content/resumes/' . $data['curriculo']));
@@ -215,7 +218,7 @@ class CarreirasController extends Controller
             }
         }
 
-        return Inertia::location(route('Carreiras.index'));
+        return redirect()->route('Carreiras.index', [], 301);
     }
 
     /**
@@ -223,7 +226,8 @@ class CarreirasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function concluido($token) {
+    public function concluido($token)
+    {
 
         $curriculo = Curriculo::query()
             ->where([

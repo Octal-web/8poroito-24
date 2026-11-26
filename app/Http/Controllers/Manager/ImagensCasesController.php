@@ -11,9 +11,6 @@ use Inertia\Inertia;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
-
-use DeepCopy\DeepCopy;
 
 class ImagensCasesController extends Controller
 {
@@ -24,9 +21,10 @@ class ImagensCasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id) {
+    public function index($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Cases.index'));
+            return redirect()->route('Manager.Cases.index', [], 301);
         }
 
         $caseCliente = CaseCliente::query()
@@ -39,7 +37,7 @@ class ImagensCasesController extends Controller
                     $q->whereHas('idiomas', function ($r) {
                         $r->Where('padrao', true);
                     })
-                    ->orderBy('idioma_id', 'DESC');
+                        ->orderBy('idioma_id', 'DESC');
                 }
             ])
             ->with([
@@ -47,15 +45,15 @@ class ImagensCasesController extends Controller
                     $q->where([
                         'excluido' => NULL
                     ])
-                    ->orderBy('ordem', 'ASC')
-                    ->orderBy('id', 'DESC'); 
+                        ->orderBy('ordem', 'ASC')
+                        ->orderBy('id', 'DESC');
                 }
 
             ])
             ->first();
 
-        if(!$caseCliente) {
-            return Inertia::location(route('Manager.Cases.index'));
+        if (!$caseCliente) {
+            return redirect()->route('Manager.Cases.index', [], 301);
         }
 
         return Inertia::render('Manager/Cases/Imagens/index', [
@@ -69,7 +67,8 @@ class ImagensCasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function novo(Request $request, $id) {
+    public function novo(Request $request, $id)
+    {
         if ($request->ajax()) {
             $caseCliente = CaseCliente::query()
                 ->where([
@@ -79,7 +78,7 @@ class ImagensCasesController extends Controller
                 ->first();
 
             if (!$caseCliente) {
-                return Inertia::location(route('Manager.Cases.index'));
+                return redirect()->route('Manager.Cases.index', [], 301);
             }
 
             $request->validate([
@@ -141,8 +140,9 @@ class ImagensCasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function tamanho(Request $request, $id) {
-        if ($request->ajax()){
+    public function tamanho(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return $request->header('referer');
             }
@@ -171,8 +171,9 @@ class ImagensCasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
-        if ($request->ajax()){
+    public function excluir(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return $request->header('referer');
             }
@@ -201,8 +202,9 @@ class ImagensCasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function visibilidade(Request $request, $id) {
-        if ($request->ajax()){
+    public function visibilidade(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return redirect()->back()->with(['type' => 'error', 'message' => 'Registro não encontrado!']);
             }
@@ -217,14 +219,13 @@ class ImagensCasesController extends Controller
             if (!$response) {
                 return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Registro não encontrado!']);
             }
-    
+
             $response->visivel = 1 - $response->visivel;
             $response->save();
-    
+
             if ($response) {
                 return redirect()->back()->with('message', ['type' => 'success', 'msg' => 'Visibilidade alterada com sucesso!']);
-            }
-            else {
+            } else {
                 return redirect()->back()->with('message', ['type' => 'error', 'msg' => 'Visibilidade não alterada!']);
             }
         }
@@ -239,8 +240,9 @@ class ImagensCasesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ordenar(Request $request) {
-        if ($request->ajax()){
+    public function ordenar(Request $request)
+    {
+        if ($request->ajax()) {
             $erros = [];
 
             if ($request->odr && is_array($request->odr)) {

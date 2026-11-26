@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contato;
-use App\Models\Idioma;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
-use DeepCopy\DeepCopy;
 
 class ContatoController extends Controller
 {
@@ -18,7 +15,8 @@ class ContatoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
 
         $contatos = Contato::query()
             ->where([
@@ -28,7 +26,7 @@ class ContatoController extends Controller
             ->orderBy('criado', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($contato) {
+            ->map(function ($contato) {
                 return [
                     'id' => $contato->id,
                     'nome' => $contato->nome,
@@ -44,7 +42,7 @@ class ContatoController extends Controller
             ->orderBy('criado', 'ASC')
             ->orderBy('id', 'DESC')
             ->get()
-            ->map(function($proposta) {
+            ->map(function ($proposta) {
                 return [
                     'id' => $proposta->id,
                     'nome' => $proposta->nome,
@@ -58,19 +56,20 @@ class ContatoController extends Controller
         ]);
     }
 
-    public function visualizar($id) {
+    public function visualizar($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Contato.index'));
+            return redirect()->route('Manager.Contato.index', [], 301);
         }
-        
+
         $contato = Contato::query()
             ->where([
                 'excluido' => NULL,
             ])
             ->first();
 
-        if(!$contato) {
-            return Inertia::location(route('Manager.Contato.index'));
+        if (!$contato) {
+            return redirect()->route('Manager.Home.index', [], 301);
         }
 
         $contato = [
@@ -97,8 +96,9 @@ class ContatoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
-        if ($request->ajax()){
+    public function excluir(Request $request, $id)
+    {
+        if ($request->ajax()) {
             if (!$id) {
                 return $request->header('referer');
             }

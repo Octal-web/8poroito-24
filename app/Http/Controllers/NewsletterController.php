@@ -15,8 +15,9 @@ class NewsletterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function enviar(PostNewsletterRequest $request) {
-        if($request->post()){
+    public function enviar(PostNewsletterRequest $request)
+    {
+        if ($request->post()) {
             $newsletter = new Newsletter;
 
             $newsletter->nome = $request->nome;
@@ -41,6 +42,6 @@ class NewsletterController extends Controller
             }
         }
 
-        return Inertia::location(route('Newsletters.index'));
+        return redirect()->route('Newsletters.index', [], 301);
     }
 };

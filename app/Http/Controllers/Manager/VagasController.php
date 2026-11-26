@@ -14,7 +14,8 @@ class VagasController extends Controller
 {
     protected $vagaService;
 
-    public function __construct(VagaService $vagaService) {
+    public function __construct(VagaService $vagaService)
+    {
 
         parent::__construct();
         $this->vagaService = $vagaService;
@@ -25,7 +26,8 @@ class VagasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function adicionar() {
+    public function adicionar()
+    {
         return Inertia::render('Manager/Vagas/adicionar');
     }
 
@@ -35,7 +37,8 @@ class VagasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function novo(PostVagaRequest $request) {
+    public function novo(PostVagaRequest $request)
+    {
         if (!$request->ajax()) {
             return to_route('Manager.Carreiras.index');
         }
@@ -56,9 +59,10 @@ class VagasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editar($id) {
+    public function editar($id)
+    {
         if (!$id) {
-            return Inertia::location(route('Manager.Carreiras.index'));
+            return redirect()->route('Manager.Carreiras.index', [], 301);
         }
 
         $idiomas = Idioma::query()
@@ -80,17 +84,17 @@ class VagasController extends Controller
                             $query->where('codigo', $idioma);
                         });
                     })
-                    ->when(!$idioma, function ($r) {
-                        $r->whereHas('idiomas', function ($query) {
-                            $query->where('padrao', true);
+                        ->when(!$idioma, function ($r) {
+                            $r->whereHas('idiomas', function ($query) {
+                                $query->where('padrao', true);
+                            });
                         });
-                    });
                 },
             ])
             ->first();
 
         if (!$vaga) {
-            return Inertia::location(route('Manager.Carreiras.index'));
+            return redirect()->route('Manager.Carreiras.index', [], 301);
         }
 
         $idioma = inertia()->getShared('idioma');
@@ -116,7 +120,8 @@ class VagasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function atualizar(PostVagaRequest $request, $id) {
+    public function atualizar(PostVagaRequest $request, $id)
+    {
         if (!$request->ajax()) {
             return to_route('Manager.Carreiras.index');
         }
@@ -141,7 +146,8 @@ class VagasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function excluir(Request $request, $id) {
+    public function excluir(Request $request, $id)
+    {
         if (!$request->ajax()) {
             return $request->header('referer');
         }
@@ -166,7 +172,8 @@ class VagasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function visibilidade(Request $request, $id) {
+    public function visibilidade(Request $request, $id)
+    {
         if (!$request->ajax()) {
             return $request->header('referer');
         }
@@ -194,7 +201,8 @@ class VagasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function ordenar(Request $request) {
+    public function ordenar(Request $request)
+    {
         if (!$request->ajax()) {
             return redirect()->back();
         }
